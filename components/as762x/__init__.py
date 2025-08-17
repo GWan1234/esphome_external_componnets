@@ -1,0 +1,1 @@
+# https://look.ams-osram.com/m/20aff4fa1cc1510e/original/AS7261-DS000493.pdf

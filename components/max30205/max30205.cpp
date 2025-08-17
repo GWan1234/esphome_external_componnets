@@ -19,7 +19,7 @@ void MAX30205Component::setup() {
   ESP_LOGCONFIG(TAG, "Running setup");
   this->write_config(false, this->timeout_, this->format_, this->fault_queue_, this->pin_polarity_, this->mode_,
                      false);  // Set default configuration
-  // todo write REG_Tos REG_Thyst
+
   this->write_threshold(REG_Tos, this->high_threshold_);
   this->write_threshold(REG_Thyst, this->low_threshold_);
 

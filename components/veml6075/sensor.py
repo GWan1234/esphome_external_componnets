@@ -3,8 +3,7 @@ import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome.components import sensor, i2c
 from esphome.const import (
-    STATE_CLASS_MEASUREMENT,
-    CONF_ID, DEVICE_CLASS_PRESSURE, CONF_INTEGRATION_TIME, ICON_BRIGHTNESS_5, DEVICE_CLASS_EMPTY
+    CONF_ID, CONF_INTEGRATION_TIME, ICON_BRIGHTNESS_5, DEVICE_CLASS_EMPTY
 )
 
 CODEOWNERS = ["@synodriver"]

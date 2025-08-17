@@ -2,7 +2,7 @@ import esphome.codegen as cg
 from esphome.components import sensor
 import esphome.config_validation as cv
 from esphome.const import (
-    CONF_TEMPERATURE,
+    CONF_INTERNAL_TEMPERATURE,
     CONF_DEBUG,
     UNIT_CELSIUS,
     DEVICE_CLASS_TEMPERATURE,
@@ -24,7 +24,7 @@ CONF_RD_PTR = "rd_ptr"
 CONFIG_SCHEMA = cv.Schema(
     {
         cv.GenerateID(CONF_MAX30105_ID): cv.use_id(MAX30105Component),
-        cv.Optional(CONF_TEMPERATURE): sensor.sensor_schema(
+        cv.Optional(CONF_INTERNAL_TEMPERATURE): sensor.sensor_schema(
             unit_of_measurement=UNIT_CELSIUS,
             accuracy_decimals=3,
             device_class=DEVICE_CLASS_TEMPERATURE,
@@ -81,7 +81,7 @@ CONFIG_SCHEMA = cv.Schema(
 
 async def to_code(config):
     max30105_component = await cg.get_variable(config[CONF_MAX30105_ID])
-    if temperature := config.get(CONF_TEMPERATURE):
+    if temperature := config.get(CONF_INTERNAL_TEMPERATURE):
         sens = await sensor.new_sensor(temperature)
         cg.add(max30105_component.set_temperature_sensor(sens))
     if led1 := config.get(CONF_LED1):
