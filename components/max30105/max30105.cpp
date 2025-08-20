@@ -81,9 +81,11 @@ void MAX30105Component::setup() {
 }
 
 void MAX30105Component::update() {
+#ifdef USE_SENSOR
   this->read_temperature();
   this->read_fifo();
   this->read_overflow_counter();
+#endif
 }
 
 void MAX30105Component::dump_config() {
@@ -101,20 +103,22 @@ void MAX30105Component::dump_config() {
   ESP_LOGCONFIG(TAG, "  IR Current amp: %d", this->ir_current_);
   ESP_LOGCONFIG(TAG, "  Green Current amp: %d", this->green_current_);
   ESP_LOGCONFIG(TAG, "  Pilot Current amp: %d", this->pilot_current_);
-
+#ifdef USE_SENSOR
   LOG_SENSOR("    ", "Temperature Sensor", this->temperature_sensor_);
   LOG_SENSOR("    ", "LED1 Sensor", this->led1_sensor_);
   LOG_SENSOR("    ", "LED2 Sensor", this->led2_sensor_);
   LOG_SENSOR("    ", "LED3 Sensor", this->led3_sensor_);
   LOG_SENSOR("    ", "LED4 Sensor", this->led4_sensor_);
   LOG_SENSOR("    ", "FIFO Overflow Counter Sensor", this->fifo_overflow_counter_sensor_);
-
+#endif
+#ifdef USE_BINARY_SENSOR
   LOG_BINARY_SENSOR("    ", "Power Ready Binary Sensor", this->power_ready_binary_sensor_);
   LOG_BINARY_SENSOR("    ", "Target Binary Sensor", this->target_binary_sensor_);
   LOG_BINARY_SENSOR("    ", "ALC Overflow Binary Sensor", this->alc_overflow_binary_sensor_);
   LOG_BINARY_SENSOR("    ", "Data Ready Binary Sensor", this->data_ready_binary_sensor_);
   LOG_BINARY_SENSOR("    ", "FIFO Full Binary Sensor", this->fifo_full_binary_sensor_);
   LOG_BINARY_SENSOR("    ", "Temperature Ready Binary Sensor", this->temperature_ready_binary_sensor_);
+#endif
 }
 
 void MAX30105Component::read_fifo() {
@@ -186,11 +190,13 @@ void MAX30105Component::read_fifo() {
 }
 
 void MAX30105Component::read_overflow_counter() {
+#ifdef USE_SENSOR
   uint8_t overflow_count = 0;
   if (this->fifo_overflow_counter_sensor_ != nullptr) {
     overflow_count = this->reg(REG_OVF_COUNTER).get();  // 获取溢出计数
     this->fifo_overflow_counter_sensor_->publish_state(overflow_count);
   }
+#endif
 }
 
 
@@ -299,49 +305,63 @@ void MAX30105Component::loop() {
     uint8_t status1 = this->reg(REG_INTR_STATUS_1).get();  // 读取中断状态寄存器以清除中断
     uint8_t status2 = this->reg(REG_INTR_STATUS_2).get();  // 读取中断状态寄存器以清除中断
     if (status1 & MAX30105_INTERRUPT_PWR_RDY) {
+#ifdef USE_BINARY_SENSOR
       if (this->power_ready_binary_sensor_ != nullptr) {
         this->power_ready_binary_sensor_->publish_state(true);
       }
+#endif
       this->on_power_ready_callback_.call();
     }
     if (status1 & MAX30105_INTERRUPT_PROXIMITY) {
+#ifdef USE_BINARY_SENSOR
       if (this->target_binary_sensor_ != nullptr) {
         this->target_binary_sensor_->publish_state(true);
       }
+#endif
       this->on_prox_int_callback_.call();
     }
     if (status1 & MAX30105_INTERRUPT_ALC_OVF) {
+#ifdef USE_BINARY_SENSOR
       if (this->alc_overflow_binary_sensor_ != nullptr) {
         this->alc_overflow_binary_sensor_->publish_state(true);
       }
+#endif
       this->on_alc_overflow_callback_.call();
     }
     if (status1 & MAX30105_INTERRUPT_DATA_RDY) {
+#ifdef USE_BINARY_SENSOR
       if (this->data_ready_binary_sensor_ != nullptr) {
         this->data_ready_binary_sensor_->publish_state(true);
       }
+#endif
       this->on_data_ready_callback_.call();
     }
     if (status1 & MAX30105_INTERRUPT_FIFO_FULL) {
+#ifdef USE_BINARY_SENSOR
       if (this->fifo_full_binary_sensor_ != nullptr) {
         this->fifo_full_binary_sensor_->publish_state(true);
       }
+#endif
       this->read_overflow_counter();
       this->on_fifo_almost_full_callback_.call();
     }
     if (status2 & MAX30105_INTERRUPT_TEMP_RDY) {
+#ifdef USE_BINARY_SENSOR
       if (this->temperature_ready_binary_sensor_ != nullptr) {
         this->temperature_ready_binary_sensor_->publish_state(true);
       }
+#endif
       int32_t temp_int = (int32_t)this->reg(REG_TEMP_INT).get();
       uint8_t temp_frac = this->reg(REG_TEMP_FRAC).get(); // & 0x0F;  // 只保留低4位
       if (temp_int > 127) {
         temp_int -= 256;
       }
       float temperature = (float) temp_int + ((float) temp_frac) * 0.0625;
+#ifdef USE_SENSOR
       if (this->temperature_sensor_ != nullptr) {
         this->temperature_sensor_->publish_state(temperature);
       }
+#endif
       this->on_temp_ready_callback_.call(temperature);
     }
     this->interrupt_ = false;
@@ -349,6 +369,7 @@ void MAX30105Component::loop() {
     return;
   }
   if (this->need_clear_) {
+#ifdef USE_BINARY_SENSOR
     if (this->power_ready_binary_sensor_ != nullptr) {
       this->power_ready_binary_sensor_->publish_state(false);
     }
@@ -367,6 +388,7 @@ void MAX30105Component::loop() {
     if (this->temperature_ready_binary_sensor_ != nullptr) {
       this->temperature_ready_binary_sensor_->publish_state(false);
     }
+#endif
     this->need_clear_ = false;
   }
 }

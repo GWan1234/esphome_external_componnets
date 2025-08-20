@@ -1,12 +1,17 @@
 #pragma once
 
 #include <vector>
-#include "esphome/components/i2c/i2c.h"
-#include "esphome/components/sensor/sensor.h"
-#include "esphome/components/binary_sensor/binary_sensor.h"
-#include "esphome/core/automation.h"
+#include "esphome/core/defines.h"
 #include "esphome/core/component.h"
+#include "esphome/core/automation.h"
 #include "esphome/core/hal.h"
+#include "esphome/components/i2c/i2c.h"
+#ifdef USE_SENSOR
+#include "esphome/components/sensor/sensor.h"
+#endif
+#ifdef USE_BINARY_SENSOR
+#include "esphome/components/binary_sensor/binary_sensor.h"
+#endif
 
 namespace esphome {
 namespace max30105 {
@@ -79,6 +84,7 @@ class MAX30105Component : public PollingComponent, public i2c::I2CDevice {
   void update() override;
   void loop() override;
   // sensors
+#ifdef USE_SENSOR
   void set_temperature_sensor(sensor::Sensor *temperature_sensor) { this->temperature_sensor_ = temperature_sensor; }
   void set_led1_sensor(sensor::Sensor *led1_sensor) { this->led1_sensor_ = led1_sensor; }
   void set_led2_sensor(sensor::Sensor *led2_sensor) { this->led2_sensor_ = led2_sensor; }
@@ -87,13 +93,11 @@ class MAX30105Component : public PollingComponent, public i2c::I2CDevice {
   void set_fifo_overflow_counter_sensor(sensor::Sensor *fifo_overflow_counter_sensor) {
     this->fifo_overflow_counter_sensor_ = fifo_overflow_counter_sensor;
   }
-  void set_wr_ptr_sensor(sensor::Sensor *wr_ptr_sensor) {
-    this->wr_ptr_sensor_ = wr_ptr_sensor;
-  }
-  void set_rd_ptr_sensor(sensor::Sensor *rd_ptr_sensor) {
-    this->rd_ptr_sensor_ = rd_ptr_sensor;
-  }
+  void set_wr_ptr_sensor(sensor::Sensor *wr_ptr_sensor) { this->wr_ptr_sensor_ = wr_ptr_sensor; }
+  void set_rd_ptr_sensor(sensor::Sensor *rd_ptr_sensor) { this->rd_ptr_sensor_ = rd_ptr_sensor; }
+#endif
   // binary sensors
+#ifdef USE_BINARY_SENSOR
   void set_power_ready_binary_sensor(binary_sensor::BinarySensor *power_ready_binary_sensor) {
     this->power_ready_binary_sensor_ = power_ready_binary_sensor;
   }
@@ -112,7 +116,7 @@ class MAX30105Component : public PollingComponent, public i2c::I2CDevice {
   void set_temperature_ready_binary_sensor(binary_sensor::BinarySensor *temperature_ready_binary_sensor) {
     this->temperature_ready_binary_sensor_ = temperature_ready_binary_sensor;
   }
-
+#endif
   void set_mode(MAX30105_MODE mode) { this->mode_ = mode; }
   void set_adc_range(MAX30105_ADC_RANGE adc_range) { this->adc_range_ = adc_range; }
   void set_sample_avg(MAX30105_SAMPLE_AVERAGING sample_avg) { this->sample_avg_ = sample_avg; }
@@ -145,6 +149,7 @@ class MAX30105Component : public PollingComponent, public i2c::I2CDevice {
   void set_led_current_reg(uint8_t red_current, uint8_t ir_current, uint8_t green_current, uint8_t pilot_current);
   void enable_interrupts(bool fifo_almost_full, bool data_ready, bool alc_overflow, bool prox_int, bool temp_ready);
   void simulate_interrupt();
+
  protected:
   MAX30105_MODE mode_;
   MAX30105_ADC_RANGE adc_range_;
@@ -168,7 +173,7 @@ class MAX30105Component : public PollingComponent, public i2c::I2CDevice {
   uint8_t proximity_threshold_;  // 接近阈值
   bool interrupt_{false};        // 是否发生中断
   bool need_clear_{false};       // 是否需要清除中断传感器
-
+#ifdef USE_SENSOR
   sensor::Sensor *temperature_sensor_{nullptr};
   sensor::Sensor *led1_sensor_{nullptr};
   sensor::Sensor *led2_sensor_{nullptr};
@@ -177,14 +182,15 @@ class MAX30105Component : public PollingComponent, public i2c::I2CDevice {
   sensor::Sensor *fifo_overflow_counter_sensor_{nullptr};
   sensor::Sensor *wr_ptr_sensor_{nullptr};
   sensor::Sensor *rd_ptr_sensor_{nullptr};
-
+#endif
+#ifdef USE_BINARY_SENSOR
   binary_sensor::BinarySensor *power_ready_binary_sensor_{nullptr};
   binary_sensor::BinarySensor *target_binary_sensor_{nullptr};
   binary_sensor::BinarySensor *alc_overflow_binary_sensor_{nullptr};
   binary_sensor::BinarySensor *data_ready_binary_sensor_{nullptr};
   binary_sensor::BinarySensor *fifo_full_binary_sensor_{nullptr};
   binary_sensor::BinarySensor *temperature_ready_binary_sensor_{nullptr};
-
+#endif
   InternalGPIOPin *interrupt_pin_{nullptr};
 
   bool verify_part_id();
@@ -194,7 +200,7 @@ class MAX30105Component : public PollingComponent, public i2c::I2CDevice {
   void clear_bit(uint8_t addr, uint8_t bit);
   void clear_fifo();
 
-  void set_multi_led_slots_reg(std::vector<uint8_t>& slots);
+  void set_multi_led_slots_reg(std::vector<uint8_t> &slots);
   void read_temperature();
   void read_fifo();
 
@@ -276,7 +282,6 @@ class TemperatureReadyTrigger : public Trigger<float> {
   }
 };
 
-
 template<typename... Ts> class MAX30105ResetAction : public Action<Ts...> {
  public:
   MAX30105ResetAction(MAX30105Component *max30105) : max30105_(max30105) {}
@@ -349,10 +354,8 @@ template<typename... Ts> class MAX30105EnableInterruptsAction : public Action<Ts
   TEMPLATABLE_VALUE(bool, prox_int)
   TEMPLATABLE_VALUE(bool, temp_ready)
   void play(Ts... x) override {
-    this->max30105_->enable_interrupts(this->fifo_almost_full_.value(x...),
-                                       this->data_ready_.value(x...),
-                                       this->alc_overflow_.value(x...),
-                                       this->prox_int_.value(x...),
+    this->max30105_->enable_interrupts(this->fifo_almost_full_.value(x...), this->data_ready_.value(x...),
+                                       this->alc_overflow_.value(x...), this->prox_int_.value(x...),
                                        this->temp_ready_.value(x...));
   }
 
@@ -368,7 +371,6 @@ template<typename... Ts> class MAX30105SimulateInterruptAction : public Action<T
  protected:
   MAX30105Component *max30105_;
 };
-
 
 }  // namespace max30105
 }  // namespace esphome
