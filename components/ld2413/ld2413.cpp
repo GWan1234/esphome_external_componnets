@@ -55,14 +55,16 @@ void LD2413Component::loop() {
   }
   if (memcmp(LD2413_HEAD, this->receive_buffer.data(), 4) != 0) {
     ESP_LOGW(TAG, "Received data does not start with LD2413 head");
-    this->status_set_warning();
+//    this->status_set_warning();
     this->receive_buffer.clear();
+    this->head_found = false;
     return;
   }
   if (memcmp(LD2413_TAIL, this->receive_buffer.data() + 10, 4) != 0) {
     ESP_LOGW(TAG, "Received data does not end with LD2413 tail");
-    this->status_set_warning();
+//    this->status_set_warning();
     this->receive_buffer.clear();
+    this->head_found = false;
     return;
   }
   uint8_t *ptr = this->receive_buffer.data() + 6;
@@ -72,7 +74,6 @@ void LD2413Component::loop() {
     this->distance_sensor_->publish_state(value);
   }
   this->receive_buffer.erase(this->receive_buffer.begin(), this->receive_buffer.begin() + 14);
-  this->head_found = false;
 }
 
 uint32_t LD2413Component::get_report_interval() {
