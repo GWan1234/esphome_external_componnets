@@ -21,61 +21,63 @@ CONF_FIFO_OVERFLOW_COUNTER = "fifo_overflow_counter"
 CONF_WR_PTR = "wr_ptr"
 CONF_RD_PTR = "rd_ptr"
 
-CONFIG_SCHEMA = cv.Schema(
-    {
-        cv.GenerateID(CONF_MAX30105_ID): cv.use_id(MAX30105Component),
-        cv.Optional(CONF_INTERNAL_TEMPERATURE): sensor.sensor_schema(
-            unit_of_measurement=UNIT_CELSIUS,
-            accuracy_decimals=3,
-            device_class=DEVICE_CLASS_TEMPERATURE,
-            state_class=STATE_CLASS_MEASUREMENT,
-        ),
-        cv.Optional(CONF_LED1): sensor.sensor_schema(
-            # unit_of_measurement=UNIT_CELSIUS,
-            icon="mdi:led-variant-on",
-            accuracy_decimals=1,
-            # device_class=DEVICE_CLASS_TEMPERATURE,
-            state_class=STATE_CLASS_MEASUREMENT,
-        ),
-        cv.Optional(CONF_LED2): sensor.sensor_schema(
-            # unit_of_measurement=UNIT_CELSIUS,
-            icon="mdi:led-variant-on",
-            accuracy_decimals=1,
-            # device_class=DEVICE_CLASS_TEMPERATURE,
-            state_class=STATE_CLASS_MEASUREMENT,
-        ),
-        cv.Optional(CONF_LED3): sensor.sensor_schema(
-            # unit_of_measurement=UNIT_CELSIUS,
-            icon="mdi:led-variant-on",
-            accuracy_decimals=1,
-            # device_class=DEVICE_CLASS_TEMPERATURE,
-            state_class=STATE_CLASS_MEASUREMENT,
-        ),
-        cv.Optional(CONF_LED4): sensor.sensor_schema(
-            # unit_of_measurement=UNIT_CELSIUS,
-            icon="mdi:led-variant-on",
-            accuracy_decimals=1,
-            # device_class=DEVICE_CLASS_TEMPERATURE,
-            state_class=STATE_CLASS_MEASUREMENT,
-        ),
-        cv.Optional(CONF_FIFO_OVERFLOW_COUNTER): sensor.sensor_schema(
-            icon="mdi:counter",
-            accuracy_decimals=1,
-            state_class=STATE_CLASS_MEASUREMENT,
-        ),
-        cv.Optional(CONF_DEBUG): cv.Schema({
-            cv.Optional(CONF_WR_PTR): sensor.sensor_schema(
+CONFIG_SCHEMA = cv.All(
+    cv.Schema(
+        {
+            cv.GenerateID(CONF_MAX30105_ID): cv.use_id(MAX30105Component),
+            cv.Optional(CONF_INTERNAL_TEMPERATURE): sensor.sensor_schema(
+                unit_of_measurement=UNIT_CELSIUS,
+                accuracy_decimals=3,
+                device_class=DEVICE_CLASS_TEMPERATURE,
+                state_class=STATE_CLASS_MEASUREMENT,
+            ),
+            cv.Optional(CONF_LED1): sensor.sensor_schema(
+                # unit_of_measurement=UNIT_CELSIUS,
+                icon="mdi:led-variant-on",
+                accuracy_decimals=1,
+                # device_class=DEVICE_CLASS_TEMPERATURE,
+                state_class=STATE_CLASS_MEASUREMENT,
+            ),
+            cv.Optional(CONF_LED2): sensor.sensor_schema(
+                # unit_of_measurement=UNIT_CELSIUS,
+                icon="mdi:led-variant-on",
+                accuracy_decimals=1,
+                # device_class=DEVICE_CLASS_TEMPERATURE,
+                state_class=STATE_CLASS_MEASUREMENT,
+            ),
+            cv.Optional(CONF_LED3): sensor.sensor_schema(
+                # unit_of_measurement=UNIT_CELSIUS,
+                icon="mdi:led-variant-on",
+                accuracy_decimals=1,
+                # device_class=DEVICE_CLASS_TEMPERATURE,
+                state_class=STATE_CLASS_MEASUREMENT,
+            ),
+            cv.Optional(CONF_LED4): sensor.sensor_schema(
+                # unit_of_measurement=UNIT_CELSIUS,
+                icon="mdi:led-variant-on",
+                accuracy_decimals=1,
+                # device_class=DEVICE_CLASS_TEMPERATURE,
+                state_class=STATE_CLASS_MEASUREMENT,
+            ),
+            cv.Optional(CONF_FIFO_OVERFLOW_COUNTER): sensor.sensor_schema(
                 icon="mdi:counter",
                 accuracy_decimals=1,
                 state_class=STATE_CLASS_MEASUREMENT,
             ),
-            cv.Optional(CONF_RD_PTR): sensor.sensor_schema(
-                icon="mdi:counter",
-                accuracy_decimals=1,
-                state_class=STATE_CLASS_MEASUREMENT,
-            )
-        })
-    }
+            cv.Optional(CONF_DEBUG): cv.Schema({
+                cv.Optional(CONF_WR_PTR): sensor.sensor_schema(
+                    icon="mdi:counter",
+                    accuracy_decimals=1,
+                    state_class=STATE_CLASS_MEASUREMENT,
+                ),
+                cv.Optional(CONF_RD_PTR): sensor.sensor_schema(
+                    icon="mdi:counter",
+                    accuracy_decimals=1,
+                    state_class=STATE_CLASS_MEASUREMENT,
+                )
+            })
+        }
+    )
 )
 
 

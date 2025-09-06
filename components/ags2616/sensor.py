@@ -7,7 +7,6 @@ from esphome.const import (
     CONF_CURRENT_RESISTOR,
     CONF_HYDROGEN,
     CONF_MODE,
-    DEVICE_CLASS_CARBON_MONOXIDE,
     STATE_CLASS_MEASUREMENT,
     UNIT_PARTS_PER_MILLION,
     UNIT_OHM, ICON_RESTART,
@@ -65,7 +64,7 @@ AGS2616CalibrateAction = ags2616.class_("AGS2616CalibrateAction", automation.Act
 AGS2616_CALIBRATEACTION_SCHEMA = automation.maybe_simple_id(
     {
         cv.Required(CONF_ID): cv.use_id(AGS2616Component),
-        cv.Required(CONF_MODE): cv.positive_int,
+        cv.Required(CONF_MODE): cv.templatable(cv.positive_int),
     }
 )
 

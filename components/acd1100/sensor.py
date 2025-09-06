@@ -69,7 +69,7 @@ ACD1100SetCalibrateModeAction = acd1100.class_("ACD1100SetCalibrateModeAction", 
 ACD1100_SETCALIBRATEACTIONMODE_SCHEMA = automation.maybe_simple_id(
     {
         cv.Required(CONF_ID): cv.use_id(ACD1100Component),
-        cv.Required(CONF_MODE): cv.boolean,
+        cv.Required(CONF_MODE): cv.templatable(cv.boolean),
     }
 )
 @automation.register_action("acd1100.set_calibrate_mode", ACD1100SetCalibrateModeAction, ACD1100_SETCALIBRATEACTIONMODE_SCHEMA)
@@ -84,7 +84,7 @@ ACD1100CalibrateAction = acd1100.class_("ACD1100CalibrateAction", automation.Act
 ACD1100_CALIBRATEACTION_SCHEMA = automation.maybe_simple_id(
     {
         cv.Required(CONF_ID): cv.use_id(ACD1100Component),
-        cv.Required(CONF_BASE): cv.positive_int,
+        cv.Required(CONF_BASE): cv.templatable(cv.positive_int),
     }
 )
 @automation.register_action("acd1100.calibrate", ACD1100CalibrateAction, ACD1100_CALIBRATEACTION_SCHEMA)

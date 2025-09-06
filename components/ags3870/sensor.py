@@ -61,7 +61,7 @@ AGS3870CalibrateAction = ags3870.class_("AGS3870CalibrateAction", automation.Act
 AGS3870_CALIBRATEACTION_SCHEMA = automation.maybe_simple_id(
     {
         cv.Required(CONF_ID): cv.use_id(AGS3870Component),
-        cv.Required(CONF_MODE): cv.positive_int,
+        cv.Required(CONF_MODE): cv.templatable(cv.positive_int),
     }
 )
 @automation.register_action("ags3870.calibrate", AGS3870CalibrateAction, AGS3870_CALIBRATEACTION_SCHEMA)

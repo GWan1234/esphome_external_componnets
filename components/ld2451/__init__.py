@@ -141,8 +141,8 @@ LD2451SetSensitivityAction = ld2451.class_("LD2451SetSensitivityAction", automat
 LD2451_SET_SENSITIVITY_ACTION_SCHEMA = automation.maybe_simple_id(
     {
         cv.Required(CONF_ID): cv.use_id(LD2451Component),
-        cv.Required(CONF_VALID_TRIGS): cv.int_range(1, 0x0A),
-        cv.Required(CONF_SIGNAL_THRESHOLD): cv.int_range(0, 8),
+        cv.Required(CONF_VALID_TRIGS): cv.templatable(cv.int_range(1, 0x0A)),
+        cv.Required(CONF_SIGNAL_THRESHOLD): cv.templatable(cv.int_range(0, 8)),
     }
 )
 @automation.register_action("ld2451.set_sensitivity", LD2451SetSensitivityAction, LD2451_SET_SENSITIVITY_ACTION_SCHEMA)
@@ -162,10 +162,10 @@ LD2451SetTargetDetectConfigAction = ld2451.class_("LD2451SetTargetDetectConfigAc
 LD2451_SET_TARGET_DETECT_CONFIG_ACTION_SCHEMA = automation.maybe_simple_id(
     {
         cv.Required(CONF_ID): cv.use_id(LD2451Component),
-        cv.Required(CONF_MAX_DISTANCE): cv.int_range(0x0A, 0xFF),
-        cv.Required(CONF_DIRECTION): cv.enum(LD2451_DIRECTION_OPTIONS),
-        cv.Required(CONF_MIN_SPEED): cv.int_range(0x00, 0x78),
-        cv.Required(CONF_NO_TARGET_DELAY): cv.uint8_t,
+        cv.Required(CONF_MAX_DISTANCE): cv.templatable(cv.int_range(0x0A, 0xFF)),
+        cv.Required(CONF_DIRECTION): cv.templatable(cv.enum(LD2451_DIRECTION_OPTIONS)),
+        cv.Required(CONF_MIN_SPEED): cv.templatable(cv.int_range(0x00, 0x78)),
+        cv.Required(CONF_NO_TARGET_DELAY): cv.templatable(cv.uint8_t),
     }
 )
 @automation.register_action("ld2451.set_target_detect_config", LD2451SetTargetDetectConfigAction, LD2451_SET_TARGET_DETECT_CONFIG_ACTION_SCHEMA)

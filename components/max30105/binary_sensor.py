@@ -15,33 +15,36 @@ DEPENDENCIES = ["max30105"]
 CONF_POWER_READY = "power_ready"
 CONF_FIFO_FULL = "fifo_full"
 
-CONFIG_SCHEMA = cv.Schema({
-    cv.GenerateID(CONF_MAX30105_ID): cv.use_id(MAX30105Component),
-    cv.Optional(CONF_POWER_READY): binary_sensor.binary_sensor_schema(
-        device_class=DEVICE_CLASS_POWER,
-        icon=ICON_POWER,
-    ),
-    cv.Optional(CONF_HAS_TARGET): binary_sensor.binary_sensor_schema(
-        device_class=DEVICE_CLASS_PRESENCE,
-        icon=ICON_MOTION_SENSOR,
-    ),
-    cv.Optional(CONF_ALC_OVERFLOW): binary_sensor.binary_sensor_schema(
-        device_class=DEVICE_CLASS_LIGHT,
-        icon=ICON_LIGHTBULB,
-    ),
-    cv.Optional(CONF_DATA_READY): binary_sensor.binary_sensor_schema(
-        device_class=DEVICE_CLASS_POWER,
-        icon=ICON_COUNTER,
-    ),
-    cv.Optional(CONF_FIFO_FULL): binary_sensor.binary_sensor_schema(
-        device_class=DEVICE_CLASS_POWER,
-        icon=ICON_COUNTER,
-    ),
-    cv.Optional(CONF_TEMPERATURE_READY): binary_sensor.binary_sensor_schema(
-        device_class=DEVICE_CLASS_POWER,
-        icon=ICON_COUNTER,
-    )
-})
+CONFIG_SCHEMA = cv.All(
+    cv.Schema({
+        cv.GenerateID(CONF_MAX30105_ID): cv.use_id(MAX30105Component),
+        cv.Optional(CONF_POWER_READY): binary_sensor.binary_sensor_schema(
+            device_class=DEVICE_CLASS_POWER,
+            icon=ICON_POWER,
+        ),
+        cv.Optional(CONF_HAS_TARGET): binary_sensor.binary_sensor_schema(
+            device_class=DEVICE_CLASS_PRESENCE,
+            icon=ICON_MOTION_SENSOR,
+        ),
+        cv.Optional(CONF_ALC_OVERFLOW): binary_sensor.binary_sensor_schema(
+            device_class=DEVICE_CLASS_LIGHT,
+            icon=ICON_LIGHTBULB,
+        ),
+        cv.Optional(CONF_DATA_READY): binary_sensor.binary_sensor_schema(
+            device_class=DEVICE_CLASS_POWER,
+            icon=ICON_COUNTER,
+        ),
+        cv.Optional(CONF_FIFO_FULL): binary_sensor.binary_sensor_schema(
+            device_class=DEVICE_CLASS_POWER,
+            icon=ICON_COUNTER,
+        ),
+        cv.Optional(CONF_TEMPERATURE_READY): binary_sensor.binary_sensor_schema(
+            device_class=DEVICE_CLASS_POWER,
+            icon=ICON_COUNTER,
+        )
+    })
+)
+
 
 async def to_code(config):
     max30105_component = await cg.get_variable(config[CONF_MAX30105_ID])

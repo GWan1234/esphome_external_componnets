@@ -69,7 +69,7 @@ ACD3100CalibrateAction = acd3100.class_("ACD3100CalibrateAction", automation.Act
 ACD3100_CALIBRATEACTION_SCHEMA = automation.maybe_simple_id(
     {
         cv.Required(CONF_ID): cv.use_id(ACD3100Component),
-        cv.Required(CONF_BASE): cv.positive_int,
+        cv.Required(CONF_BASE): cv.templatable(cv.positive_int),
     }
 )
 @automation.register_action("acd3100.calibrate", ACD3100CalibrateAction, ACD3100_CALIBRATEACTION_SCHEMA)
