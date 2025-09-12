@@ -59,7 +59,8 @@ CONFIG_SCHEMA = cv.All(
 
 FINAL_VALIDATE_SCHEMA = uart.final_validate_device_schema(
     "ld2451",
-    baud_rate=115200,
+    require_tx=True,
+    require_rx=True,
     parity=None,
     stop_bits=1,
 )

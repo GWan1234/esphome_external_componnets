@@ -209,6 +209,7 @@ void LD2451Component::set_baud_rate(LD2451_BAUD_RATE baud_rate) {
   //      this->parent_->set_baud_rate(460800);
   //      break;
   //  }
+  this->set_timeout(200, [this]() { this->restart(); });
 }
 
 std::string LD2451Component::version() {
