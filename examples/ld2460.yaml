@@ -1,0 +1,210 @@
+substitutions:
+  name: "hlk-ld2460"
+  location: "客厅"  #放置位置
+
+esphome:
+  name: "${name}"
+  name_add_mac_suffix: true
+  friendly_name: "${location}LD2460人在传感器"
+  comment: hlk-ld2460
+  project:
+    name: synodriver.hlk-ld2460
+    version: "0.0.1"
+preferences:
+  flash_write_interval: 10min
+esp32:
+  board: esp32-s3-devkitc-1
+  flash_size: 8MB
+  cpu_frequency: 240MHz
+  framework:
+    type: esp-idf
+
+psram:
+  mode: quad
+  speed: 80MHz
+# Enable logging
+logger:
+  level: DEBUG
+
+# Enable Home Assistant API
+api:
+  on_client_connected:
+    - logger.log:
+        format: "Client %s connected to API with IP %s"
+        args: ["client_info.c_str()", "client_address.c_str()"]
+
+ota:
+  - platform: esphome
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    password: ""
+  #use_address: 192.168.5.240
+captive_portal:
+
+web_server:
+  port: 80
+
+external_components:
+  - source:
+      type: local
+      path: components
+
+uart:
+  id: uart_bus
+  tx_pin: 17
+  rx_pin: 18
+  baud_rate: 115200
+  stop_bits: 1
+
+ld2460:
+  uart_id: uart_bus
+  id: ld2460_
+  height: 2.6  # 安装高度
+  angle: 20  # 安装角度
+  mode: "Side"  # 侧装
+  sensitivity: "High" # 高灵敏度
+
+debug:
+  update_interval: 5s
+
+sensor:
+  - platform: ld2460
+    ld2460_id: ld2460_
+    target_number:
+      name: "target number"
+    target_1:
+      x:
+        name: "target_1 x"
+      y:
+        name: "target_1 y"
+    target_2:
+      x:
+        name: "target_2 x"
+      y:
+        name: "target_2 y"
+    target_3:
+      x:
+        name: "target_3 x"
+      y:
+        name: "target_3 y"
+    target_4:
+      x:
+        name: "target_4 x"
+      y:
+        name: "target_4 y"
+    target_5:
+      x:
+        name: "target_5 x"
+      y:
+        name: "target_5 y"
+
+
+  - platform: wifi_signal # Reports the WiFi signal strength/RSSI in dB
+    name: "${name} WiFi Signal dB"
+    id: wifi_signal_db
+    update_interval: 60s
+    entity_category: "diagnostic"
+
+  - platform: copy # Reports the WiFi signal strength in %
+    source_id: wifi_signal_db
+    name: "${name} WiFi Signal Percent"
+    filters:
+      - lambda: return min(max(2 * (x + 100.0), 0.0), 100.0);
+    unit_of_measurement: "%"
+    entity_category: "diagnostic"
+
+  - platform: debug
+    free:
+      name: "Heap Free"
+    block:
+      name: "Heap Max Block"
+    loop_time:
+      name: "Loop Time"
+    cpu_frequency:
+      name: "CPU Frequency"
+    psram:
+      name: "Free PSRAM"
+
+time:
+  - platform: sntp
+    id: my_time
+
+switch:
+  - platform: restart
+    name: "${name} controller Restart"
+  - platform: factory_reset
+    name: Restart with Factory Default Settings
+    disabled_by_default: true
+  - platform: ld2460
+    ld2460_id: ld2460_
+    enable_upload:
+      name: "enable radar upload"
+
+text_sensor:
+  - platform: wifi_info
+    ip_address:
+      name: ${name} IP Address
+    ssid:
+      name: ${name} Connected SSID
+    bssid:
+      name: ${name} Connected BSSID
+    mac_address:
+      name: ${name} Mac Wifi Address
+    # scan_results:
+    #   name: ${name} Latest Scan Results
+    dns_address:
+      name: ${name} DNS Address
+  - platform: version
+    name: "ESPHome Version"
+
+  - platform: ld2460
+    ld2460_id: ld2460_
+    version:
+      name: "ld2460 version"
+
+  - platform: debug
+    device:
+      name: "device info"
+    reset_reason:
+      name: "reset reason"
+
+binary_sensor:
+  - platform: ld2460
+    ld2460_id: ld2460_
+    target:
+      name: "has target"
+
+number:
+  - platform: ld2460
+    ld2460_id: ld2460_
+    height:
+      name: "install height"
+    angle:
+      name: "install angle"
+    detect_distance:
+      name: "detect distance"
+    detect_start_angle:
+      name: "detect start angle"
+    detect_end_angle:
+      name: "detect end angle"
+
+select:
+  - platform: ld2460
+    ld2460_id: ld2460_
+    mode:
+      name: "install mode"
+    baud_rate:
+      name: "baud rate"
+    sensitivity:
+      name: "sensitivity"
+
+button:
+  - platform: ld2460
+    ld2460_id: ld2460_
+    factory_reset:
+      name: "radar factory reset"
+    restart:
+      name: "radar restart"
