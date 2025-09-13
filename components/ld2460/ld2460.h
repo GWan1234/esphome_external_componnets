@@ -163,6 +163,19 @@ template<typename... Ts> class LD2460FactoryResetAction : public Action<Ts...> {
   LD2460Component *ld2460_;
 };
 
+template<typename... Ts> class LD2460SetDetectRangeAction : public Action<Ts...> {
+ public:
+  LD2460SetDetectRangeAction(LD2460Component *ld2460) : ld2460_(ld2460) {}
+  TEMPLATABLE_VALUE(float, detect_distance)
+  TEMPLATABLE_VALUE(float, detect_start_angle)
+  TEMPLATABLE_VALUE(float, detect_end_angle)
+  void play(Ts... x) override { this->ld2460_->set_detect_range(this->detect_distance_.value(x...),
+                                                                this->detect_start_angle_.value(x...),
+                                                                this->detect_end_angle_.value(x...)); }
+
+ protected:
+  LD2460Component *ld2460_;
+};
 
 } // namespace ld2460
 } // namespace esphome

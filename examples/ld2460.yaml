@@ -28,6 +28,25 @@ logger:
 
 # Enable Home Assistant API
 api:
+  actions:
+    - action: radar_enable_upload
+      variables:
+        enable: bool
+      then:
+        - ld2460.enable_upload:
+            id: ld2460_
+            upload: !lambda 'return enable;'
+    - action: radar_set_detect_range
+      variables:
+        detect_distance: float
+        detect_start_angle: float
+        detect_end_angle: float
+      then:
+        - ld2460.set_detect_range:
+            id: ld2460_
+            detect_distance: !lambda "return detect_distance;"
+            detect_start_angle: !lambda "return detect_start_angle;"
+            detect_end_angle: !lambda "return detect_end_angle;"
   on_client_connected:
     - logger.log:
         format: "Client %s connected to API with IP %s"

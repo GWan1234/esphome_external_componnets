@@ -122,3 +122,25 @@ LD2460_FACTORY_RESET_ACTION_SCHEMA = automation.maybe_simple_id(
 async def ld2460_factory_reset_to_code(config, action_id, template_arg, args):
     paren = await cg.get_variable(config[CONF_ID])
     return cg.new_Pvariable(action_id, template_arg, paren)
+
+LD2460SetDetectRangeAction = ld2460_ns.class_("LD2460SetDetectRangeAction", automation.Action)
+LD2460_SET_DETECT_RANGE_ACTION_SCHEMA = automation.maybe_simple_id(
+    {
+        cv.Required(CONF_ID): cv.use_id(LD2460Component),
+        cv.Required(CONF_DETECT_DISTANCE): cv.templatable(cv.positive_float),
+        cv.Required(CONF_DETECT_START_ANGLE): cv.templatable(cv.float_),
+        cv.Required(CONF_DETECT_END_ANGLE): cv.templatable(cv.float_),
+    }
+)
+@automation.register_action("ld2460.set_detect_range", LD2460SetDetectRangeAction, LD2460_SET_DETECT_RANGE_ACTION_SCHEMA)
+async def ld2460_set_detect_range_to_code(config, action_id, template_arg, args):
+    paren = await cg.get_variable(config[CONF_ID])
+    var = cg.new_Pvariable(action_id, template_arg, paren)
+
+    detect_distance = await cg.templatable(config[CONF_DETECT_DISTANCE], args, cg.float_)
+    cg.add(var.set_detect_distance(detect_distance))
+    detect_start_angle = await cg.templatable(config[CONF_DETECT_START_ANGLE], args, cg.float_)
+    cg.add(var.set_detect_start_angle(detect_start_angle))
+    detect_end_angle = await cg.templatable(config[CONF_DETECT_END_ANGLE], args, cg.float_)
+    cg.add(var.set_detect_end_angle(detect_end_angle))
+    return var
