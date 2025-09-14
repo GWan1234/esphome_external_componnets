@@ -1,0 +1,735 @@
+substitutions:
+  name: "10channel-electricity"
+  location: "客厅"  #放置位置
+
+esphome:
+  name: "${name}"
+  name_add_mac_suffix: true
+  friendly_name: "${location}10通道电能计量器"
+  comment: 10channel-electricity
+  project:
+    name: synodriver.10channel-electricity
+    version: "0.0.1"
+preferences:
+  flash_write_interval: 10min
+esp32:
+  board: esp32-c3-devkitm-1
+  framework:
+    type: esp-idf
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  on_client_connected:
+    - logger.log:
+        format: "Client %s connected to API with IP %s"
+        args: ["client_info.c_str()", "client_address.c_str()"]
+    # - if:
+    #     condition:
+    #       binary_sensor.is_on: relay_status
+    #     then:
+    #       - logger.log: "Power is ON!"
+    #       - light.turn_on: stat_led
+    #       - delay: 2s
+    #     else:
+    #       - logger.log: "Power is OFF!"
+    #       - light.turn_off: stat_led
+ota:
+  - platform: esphome
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    password: ""
+  #use_address: 192.168.5.240
+captive_portal:
+
+# dashboard_import:
+#   package_import_url: github://carrot8848/ESPHome/Smart-Plug-01/config_v1.1.yaml@main
+#   import_full_config: True
+web_server:
+  port: 80    
+external_components:
+  - source: 
+      type: git
+      url: https://github.com/dentra/esphome-components
+  - source: 
+      type: local
+      path: components
+
+globals:
+  - id: energy1_
+    type: float
+    restore_value: yes
+  - id: energy1_last  #energy from last power cycle
+    type: float
+    restore_value: yes
+  - id: energy2_
+    type: float
+    restore_value: yes
+  - id: energy2_last  #energy from last power cycle
+    type: float
+    restore_value: yes
+  - id: energy3_
+    type: float
+    restore_value: yes
+  - id: energy3_last  #energy from last power cycle
+    type: float
+    restore_value: yes
+  - id: energy4_
+    type: float
+    restore_value: yes
+  - id: energy4_last  #energy from last power cycle
+    type: float
+    restore_value: yes
+  - id: energy5_
+    type: float
+    restore_value: yes
+  - id: energy5_last  #energy from last power cycle
+    type: float
+    restore_value: yes
+  - id: energy6_
+    type: float
+    restore_value: yes
+  - id: energy6_last  #energy from last power cycle
+    type: float
+    restore_value: yes
+  - id: energy7_
+    type: float
+    restore_value: yes
+  - id: energy7_last  #energy from last power cycle
+    type: float
+    restore_value: yes
+  - id: energy8_
+    type: float
+    restore_value: yes
+  - id: energy8_last  #energy from last power cycle
+    type: float
+    restore_value: yes
+  - id: energy9_
+    type: float
+    restore_value: yes
+  - id: energy9_last  #energy from last power cycle
+    type: float
+    restore_value: yes
+  - id: energy10_
+    type: float
+    restore_value: yes
+  - id: energy10_last  #energy from last power cycle
+    type: float
+    restore_value: yes
+  - id: energyall_
+    type: float
+    restore_value: yes
+  - id: energyall_last  #energy from last power cycle
+    type: float
+    restore_value: yes
+
+debug:
+  update_interval: 5s
+
+uart:
+  id: uart_bus
+  tx_pin: 6
+  rx_pin: 5
+  baud_rate: 38400
+  stop_bits: 1
+  rx_buffer_size: 512
+
+sensor:
+  - platform: wifi_signal # Reports the WiFi signal strength/RSSI in dB
+    name: "${name} WiFi Signal dB"
+    id: wifi_signal_db
+    update_interval: 60s
+    entity_category: "diagnostic"
+
+  - platform: copy # Reports the WiFi signal strength in %
+    source_id: wifi_signal_db
+    name: "${name} WiFi Signal Percent"
+    filters:
+      - lambda: return min(max(2 * (x + 100.0), 0.0), 100.0);
+    unit_of_measurement: "%"
+    entity_category: "diagnostic"
+  
+  - platform: debug
+    free:
+      name: "Heap Free"
+    block:
+      name: "Heap Max Block"
+    loop_time:
+      name: "Loop Time"
+    cpu_frequency:
+      name: "CPU Frequency"
+  
+  - platform: bl0910
+    id: "bl0910_"
+    uart_id: uart_bus
+    update_interval: 5s # 状态更新间隔
+    frequency:
+      name: 'Frequency'
+    temperature:
+      name: 'Temperature'
+    voltage:
+      name: 'Voltage'
+    channel_1:
+      current:
+        name: 'Current_1'
+      power:
+        name: 'Power_1'
+      power_factor:
+        name: 'Power_Factor_1'
+      energy:
+        name: 'Energy_1'
+        id: energy_1
+        internal: True
+        on_value: 
+          then:
+            - if:
+                condition:
+                  sensor.in_range: 
+                    id: energy_1
+                    above: 0.01
+                then: 
+                  globals.set: 
+                    id: energy1_
+                    value: !lambda "return id(energy1_last) + x;"
+                else:
+                  - globals.set: 
+                      id: energy1_last
+                      value: !lambda "return id(energy1_);"
+    channel_2:
+      current:
+        name: 'Current_2'
+      power:
+        name: 'Power_2'
+      power_factor:
+        name: 'Power_Factor_2'
+      energy:
+        name: 'Energy_2'
+        id: energy_2
+        internal: True
+        on_value: 
+          then:
+            - if:
+                condition:
+                  sensor.in_range: 
+                    id: energy_2
+                    above: 0.01
+                then: 
+                  globals.set: 
+                    id: energy2_
+                    value: !lambda "return id(energy2_last) + x;"
+                else:
+                  - globals.set: 
+                      id: energy2_last
+                      value: !lambda "return id(energy2_);"
+    channel_3:
+      current:
+        name: 'Current_3'
+      power:
+        name: 'Power_3'
+      power_factor:
+        name: 'Power_Factor_3'
+      energy:
+        name: 'Energy_3'
+        id: energy_3
+        internal: True
+        on_value: 
+          then:
+            - if:
+                condition:
+                  sensor.in_range: 
+                    id: energy_3
+                    above: 0.01
+                then: 
+                  globals.set: 
+                    id: energy3_
+                    value: !lambda "return id(energy3_last) + x;"
+                else:
+                  - globals.set: 
+                      id: energy3_last
+                      value: !lambda "return id(energy3_);"
+    channel_4:
+      current:
+        name: 'Current_4'
+      power:
+        name: 'Power_4'
+      power_factor:
+        name: 'Power_Factor_4'
+      energy:
+        name: 'Energy_4'
+        id: energy_4
+        internal: True
+        on_value: 
+          then:
+            - if:
+                condition:
+                  sensor.in_range: 
+                    id: energy_4
+                    above: 0.01
+                then: 
+                  globals.set: 
+                    id: energy4_
+                    value: !lambda "return id(energy4_last) + x;"
+                else:
+                  - globals.set: 
+                      id: energy4_last
+                      value: !lambda "return id(energy4_);"
+    channel_5:
+      current:
+        name: 'Current_5'
+      power:
+        name: 'Power_5'
+      power_factor:
+        name: 'Power_Factor_5'
+      energy:
+        name: 'Energy_5'
+        id: energy_5
+        internal: True
+        on_value: 
+          then:
+            - if:
+                condition:
+                  sensor.in_range: 
+                    id: energy_5
+                    above: 0.01
+                then: 
+                  globals.set: 
+                    id: energy5_
+                    value: !lambda "return id(energy5_last) + x;"
+                else:
+                  - globals.set: 
+                      id: energy5_last
+                      value: !lambda "return id(energy5_);"
+    channel_6:
+      current:
+        name: 'Current_6'
+      power:
+        name: 'Power_6'
+      power_factor:
+        name: 'Power_Factor_6'
+      energy:
+        name: 'Energy_6'
+        id: energy_6
+        internal: True
+        on_value: 
+          then:
+            - if:
+                condition:
+                  sensor.in_range: 
+                    id: energy_6
+                    above: 0.01
+                then: 
+                  globals.set: 
+                    id: energy6_
+                    value: !lambda "return id(energy6_last) + x;"
+                else:
+                  - globals.set: 
+                      id: energy6_last
+                      value: !lambda "return id(energy6_);"
+    channel_7:
+      current:
+        name: 'Current_7'
+      power:
+        name: 'Power_7'
+      power_factor:
+        name: 'Power_Factor_7'
+      energy:
+        name: 'Energy_7'
+        id: energy_7
+        internal: True
+        on_value: 
+          then:
+            - if:
+                condition:
+                  sensor.in_range: 
+                    id: energy_7
+                    above: 0.01
+                then: 
+                  globals.set: 
+                    id: energy7_
+                    value: !lambda "return id(energy7_last) + x;"
+                else:
+                  - globals.set: 
+                      id: energy7_last
+                      value: !lambda "return id(energy7_);"
+    channel_8:
+      current:
+        name: 'Current_8'
+      power:
+        name: 'Power_8'
+      power_factor:
+        name: 'Power_Factor_8'
+      energy:
+        name: 'Energy_8'
+        id: energy_8
+        internal: True
+        on_value: 
+          then:
+            - if:
+                condition:
+                  sensor.in_range: 
+                    id: energy_8
+                    above: 0.01
+                then: 
+                  globals.set: 
+                    id: energy8_
+                    value: !lambda "return id(energy8_last) + x;"
+                else:
+                  - globals.set: 
+                      id: energy8_last
+                      value: !lambda "return id(energy8_);"
+    channel_9:
+      current:
+        name: 'Current_9'
+      power:
+        name: 'Power_9'
+      power_factor:
+        name: 'Power_Factor_9'
+      energy:
+        name: 'Energy_9'
+        id: energy_9
+        internal: True
+        on_value: 
+          then:
+            - if:
+                condition:
+                  sensor.in_range: 
+                    id: energy_9
+                    above: 0.01
+                then: 
+                  globals.set: 
+                    id: energy9_
+                    value: !lambda "return id(energy9_last) + x;"
+                else:
+                  - globals.set: 
+                      id: energy9_last
+                      value: !lambda "return id(energy9_);"
+    channel_10:
+      current:
+        name: 'Current_10'
+      power:
+        name: 'Power_10'
+      power_factor:
+        name: 'Power_Factor_10'
+      energy:
+        name: 'Energy_10'
+        id: energy_10
+        internal: True
+        on_value: 
+          then:
+            - if:
+                condition:
+                  sensor.in_range: 
+                    id: energy_10
+                    above: 0.01
+                then: 
+                  globals.set: 
+                    id: energy10_
+                    value: !lambda "return id(energy10_last) + x;"
+                else:
+                  - globals.set: 
+                      id: energy10_last
+                      value: !lambda "return id(energy10_);"
+    total_energy:
+      name: 'Total_Energy'
+      id: energy_total
+      internal: True
+      on_value: 
+          then:
+            - if:
+                condition:
+                  sensor.in_range: 
+                    id: energy_total
+                    above: 0.01
+                then: 
+                  globals.set: 
+                    id: energyall_
+                    value: !lambda "return id(energyall_last) + x;"
+                else:
+                  - globals.set: 
+                      id: energyall_last
+                      value: !lambda "return id(energyall_);"
+    total_power:
+      name: 'Total_Power'
+
+  - platform: template
+    name: "${name} ch1 Total Energy"
+    id: total_energy1
+    unit_of_measurement: kWh
+    device_class: energy
+    state_class: total_increasing
+    accuracy_decimals: 2
+    lambda: |-
+      return id(energy1_);
+    update_interval: 10s
+  
+  - platform: template
+    name: "${name} ch2 Total Energy"
+    id: total_energy2
+    unit_of_measurement: kWh
+    device_class: energy
+    state_class: total_increasing
+    accuracy_decimals: 2
+    lambda: |-
+      return id(energy2_);
+    update_interval: 10s
+  
+  - platform: template
+    name: "${name} ch3 Total Energy"
+    id: total_energy3
+    unit_of_measurement: kWh
+    device_class: energy
+    state_class: total_increasing
+    accuracy_decimals: 2
+    lambda: |-
+      return id(energy3_);
+    update_interval: 10s
+  
+  - platform: template
+    name: "${name} ch4 Total Energy"
+    id: total_energy4
+    unit_of_measurement: kWh
+    device_class: energy
+    state_class: total_increasing
+    accuracy_decimals: 2
+    lambda: |-
+      return id(energy4_);
+    update_interval: 10s
+  
+  - platform: template
+    name: "${name} ch5 Total Energy"
+    id: total_energy5
+    unit_of_measurement: kWh
+    device_class: energy
+    state_class: total_increasing
+    accuracy_decimals: 2
+    lambda: |-
+      return id(energy5_);
+    update_interval: 10s
+  
+  - platform: template
+    name: "${name} ch6 Total Energy"
+    id: total_energy6
+    unit_of_measurement: kWh
+    device_class: energy
+    state_class: total_increasing
+    accuracy_decimals: 2
+    lambda: |-
+      return id(energy6_);
+    update_interval: 10s
+
+  - platform: template
+    name: "${name} ch7 Total Energy"
+    id: total_energy7
+    unit_of_measurement: kWh
+    device_class: energy
+    state_class: total_increasing
+    accuracy_decimals: 2
+    lambda: |-
+      return id(energy7_);
+    update_interval: 10s
+
+  - platform: template
+    name: "${name} ch8 Total Energy"
+    id: total_energy8
+    unit_of_measurement: kWh
+    device_class: energy
+    state_class: total_increasing
+    accuracy_decimals: 2
+    lambda: |-
+      return id(energy8_);
+    update_interval: 10s
+
+  - platform: template
+    name: "${name} ch9 Total Energy"
+    id: total_energy9
+    unit_of_measurement: kWh
+    device_class: energy
+    state_class: total_increasing
+    accuracy_decimals: 2
+    lambda: |-
+      return id(energy9_);
+    update_interval: 10s
+  
+  - platform: template
+    name: "${name} ch10 Total Energy"
+    id: total_energy10
+    unit_of_measurement: kWh
+    device_class: energy
+    state_class: total_increasing
+    accuracy_decimals: 2
+    lambda: |-
+      return id(energy10_);
+    update_interval: 10s
+
+  - platform: template
+    name: "${name} Total Energy"
+    id: total_energy
+    unit_of_measurement: kWh
+    device_class: energy
+    state_class: total_increasing
+    accuracy_decimals: 2
+    lambda: |-
+      return id(energyall_);
+    update_interval: 10s
+
+  - platform: energy_statistics
+    total: total_energy1
+    energy_today:
+      name: "${name} ch1 Energy Today"
+    energy_yesterday:
+      name: "${name} ch1 Energy Yesterday"
+    energy_week:
+      name: "${name} ch1 Energy Week"
+    energy_month:
+      name: "${name} ch1 Energy Month"
+  
+  - platform: energy_statistics
+    total: total_energy2
+    energy_today:
+      name: "${name} ch2 Energy Today"
+    energy_yesterday:
+      name: "${name} ch2 Energy Yesterday"
+    energy_week:
+      name: "${name} ch2 Energy Week"
+    energy_month:
+      name: "${name} ch2 Energy Month"
+  
+  - platform: energy_statistics
+    total: total_energy3
+    energy_today:
+      name: "${name} ch3 Energy Today"
+    energy_yesterday:
+      name: "${name} ch3 Energy Yesterday"
+    energy_week:
+      name: "${name} ch3 Energy Week"
+    energy_month:
+      name: "${name} ch3 Energy Month"
+  
+  - platform: energy_statistics
+    total: total_energy4
+    energy_today:
+      name: "${name} ch4 Energy Today"
+    energy_yesterday:
+      name: "${name} ch4 Energy Yesterday"
+    energy_week:
+      name: "${name} ch4 Energy Week"
+    energy_month:
+      name: "${name} ch4 Energy Month"
+  
+  - platform: energy_statistics
+    total: total_energy5
+    energy_today:
+      name: "${name} ch5 Energy Today"
+    energy_yesterday:
+      name: "${name} ch5 Energy Yesterday"
+    energy_week:
+      name: "${name} ch5 Energy Week"
+    energy_month:
+      name: "${name} ch5 Energy Month"
+  
+  - platform: energy_statistics
+    total: total_energy6
+    energy_today:
+      name: "${name} ch6 Energy Today"
+    energy_yesterday:
+      name: "${name} ch6 Energy Yesterday"
+    energy_week:
+      name: "${name} ch6 Energy Week"
+    energy_month:
+      name: "${name} ch6 Energy Month"
+
+  - platform: energy_statistics
+    total: total_energy7
+    energy_today:
+      name: "${name} ch7 Energy Today"
+    energy_yesterday:
+      name: "${name} ch7 Energy Yesterday"
+    energy_week:
+      name: "${name} ch7 Energy Week"
+    energy_month:
+      name: "${name} ch7 Energy Month"
+
+  - platform: energy_statistics
+    total: total_energy8
+    energy_today:
+      name: "${name} ch8 Energy Today"
+    energy_yesterday:
+      name: "${name} ch8 Energy Yesterday"
+    energy_week:
+      name: "${name} ch8 Energy Week"
+    energy_month:
+      name: "${name} ch8 Energy Month"
+
+  - platform: energy_statistics
+    total: total_energy9
+    energy_today:
+      name: "${name} ch9 Energy Today"
+    energy_yesterday:
+      name: "${name} ch9 Energy Yesterday"
+    energy_week:
+      name: "${name} ch9 Energy Week"
+    energy_month:
+      name: "${name} ch9 Energy Month"
+
+  - platform: energy_statistics
+    total: total_energy10
+    energy_today:
+      name: "${name} ch10 Energy Today"
+    energy_yesterday:
+      name: "${name} ch10 Energy Yesterday"
+    energy_week:
+      name: "${name} ch10 Energy Week"
+    energy_month:
+      name: "${name} ch10 Energy Month"
+  
+  - platform: energy_statistics
+    total: total_energy
+    energy_today:
+      name: "${name} Total Energy Today"
+    energy_yesterday:
+      name: "${name} Total Energy Yesterday"
+    energy_week:
+      name: "${name} Total Energy Week"
+    energy_month:
+      name: "${name} Total Energy Month"
+
+time:
+  - platform: sntp
+    id: my_time
+
+switch:
+  - platform: restart
+    name: "${name} controller Restart"
+  - platform: factory_reset
+    name: Restart with Factory Default Settings
+    disabled_by_default: true
+
+button:
+  - platform: template
+    name: "reset energy"
+    entity_category: "diagnostic"
+    on_press:
+      - bl0910.reset_energy:
+          id: bl0910_
+
+text_sensor:
+  - platform: wifi_info
+    ip_address:
+      name: ${name} IP Address
+    ssid:
+      name: ${name} Connected SSID
+    bssid:
+      name: ${name} Connected BSSID
+    mac_address:
+      name: ${name} Mac Wifi Address
+    # scan_results:
+    #   name: ${name} Latest Scan Results
+    dns_address:
+      name: ${name} DNS Address
+  - platform: version
+    name: "ESPHome Version"
