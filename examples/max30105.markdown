@@ -1,3 +1,23 @@
+# max30105接入esphome（自定义external component）
+
+## max0105原理
+
+- max30105是一个集成了红外线LED、红光LED和光电二极管的传感器模块，主要用于测量心率和血氧饱和度（SpO2）。它通过发射光线并检测反射回来的光线强度来计算这些生理参数。
+- 也可以根据反射的光强计算烟雾浓度
+
+## 接线
+
+max30105通常有5个引脚：VIN、GND、SCL、SDA和INT。以下是它们的功能：
+- VIN：电源输入，通常连接到3.3V电源。
+- GND：地线，连接到系统的地。
+- SCL：I2C时钟线，连接到esp32的SCL引脚。
+- SDA：I2C数据线，连接到esp32的SDA引脚。
+- INT：中断引脚，这个驱动实现了中断功能，可以连接到esp32的一个具有 **上拉电阻** 数字引脚（可选），
+如果不连接这个则无法读取温度等就绪信号。
+
+## 参考esphome配置
+
+```yaml
 substitutions:
   name: "smoke-sensor-pro"
   location: "kitchen"
@@ -53,16 +73,7 @@ api:
     - logger.log:
         format: "Client %s connected to API with IP %s"
         args: ["client_info.c_str()", "client_address.c_str()"]
-    # - if:
-    #     condition:
-    #       binary_sensor.is_on: relay_status
-    #     then:
-    #       - logger.log: "Power is ON!"
-    #       - light.turn_on: stat_led
-    #       - delay: 2s
-    #     else:
-    #       - logger.log: "Power is OFF!"
-    #       - light.turn_off: stat_led
+
 ota:
   - platform: esphome
 wifi:
@@ -113,7 +124,7 @@ max30105:
 #  on_power_ready
 #  on_data_ready
 #  on_alc_overflow
-#  on_prox_int 都可以写 这些由中断触发，需要连接中断引脚
+#  on_prox_int 都可以类似写 这些由中断触发，需要连接中断引脚
 
 # binary_sensor功能其实和上面的automation有点重复，但可以直接在home assistant里看到状态
 binary_sensor:
@@ -217,3 +228,4 @@ text_sensor:
       name: ${name} DNS Address
   - platform: version
     name: "ESPHome Version"
+```
