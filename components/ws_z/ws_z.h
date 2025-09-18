@@ -35,6 +35,7 @@ class DARTWSZComponent : public PollingComponent, public uart::UARTDevice {
   sensor::Sensor *formaldehyde_ppb_sensor_{nullptr};
   DARTWS_MODE mode_;
   std::vector<uint8_t> buffer;
+  bool head_found{false};
 };
 
 

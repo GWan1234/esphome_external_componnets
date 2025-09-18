@@ -47,6 +47,14 @@ CONFIG_SCHEMA = cv.All(
     .extend(uart.UART_DEVICE_SCHEMA)
 )
 
+FINAL_VALIDATE_SCHEMA = uart.final_validate_device_schema(
+    "zexx",
+    baud_rate=9600,
+    require_tx=True,
+    require_rx=True,
+    parity=None,
+    stop_bits=1,
+)
 
 async def to_code(config):
     var = cg.new_Pvariable(config[CONF_ID])
@@ -60,5 +68,3 @@ async def to_code(config):
         sens = await sensor.new_sensor(config[CONF_FORMALDEHYDE_PPB])
         cg.add(var.set_formaldehyde_ppb_sensor(sens))
     cg.add(var.set_mode(config[CONF_MODE]))
-    # if CONF_UPDATE_INTERVAL in config:
-    #     cg.add(var.set_update_interval(config[CONF_UPDATE_INTERVAL]))
