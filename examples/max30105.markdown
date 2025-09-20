@@ -90,8 +90,10 @@ web_server:
 
 external_components:
   - source:
-      type: local
-      path: components
+#      type: local
+#      path: components
+      type: git
+      url: https://github.com/synodriver/esphome_external_componnets
 
 i2c:
   sda: D2
