@@ -36,9 +36,10 @@ void MAX30205Component::write_threshold(uint8_t reg, int16_t data) {
 }
 
 int16_t MAX30205Component::read_threshold(uint8_t reg) {
-  this->write(&reg, 1, false);
   uint8_t temp[2];
-  this->read(temp, 2);
+  this->write_read(&reg, 1, temp, 2);
+//  this->write(&reg, 1, false);
+//  this->read(temp, 2);
   int16_t raw = ((int16_t) (temp[0] & 0x7F)) << 8 | (int16_t) temp[1];
   return raw;
 }
@@ -160,9 +161,10 @@ void MAX30205Component::write_config(bool one_shot, bool timeout, MAX30205_DATA_
 void MAX30205Component::read_config(bool *one_shot, bool *timeout, MAX30205_DATA_FORMAT *format,
                                     MAX30205_FAULT_QUEUE *fault_queue, MAX30205_PIN_POLARITY *pin_polarity,
                                     MAX30205_MODE *mode, bool *shutdown) {
-  this->write(&REG_CONFIG, 1, false);  // Write the register address
   uint8_t buff;
-  this->read(&buff, 1);          // Read the configuration register
+  this->write_read(&REG_CONFIG, 1, &buff, 1);
+//  this->write(&REG_CONFIG, 1, false);  // Write the register address
+//  this->read(&buff, 1);          // Read the configuration register
   std::bitset<8> config = buff;  // Convert to bitset for easier debugging
   if (config[7]) {
     *one_shot = true;
@@ -217,10 +219,10 @@ float MAX30205Component::read_temperature() {
 //                    &shutdown);                                                          // Read the configuration
   this->write_config(true, this->timeout_, this->format_, this->fault_queue_, this->pin_polarity_, this->mode_, false);  // Set the one-shot mode
   delay(50);  // Wait for the conversion to complete (50 ms is typical for MAX30205)
-
-  this->write(&REG_TEMPERATURE, 1, false);  // Write the register address
   uint8_t temp[2];
-  this->read(temp, 2);                                                  // Read the configuration register
+  this->write_read(&REG_TEMPERATURE, 1, temp, 2);
+//  this->write(&REG_TEMPERATURE, 1, false);  // Write the register address
+//  this->read(temp, 2);                                                  // Read the configuration register
   int16_t raw = ((int16_t) (temp[0] & 0x7F)) << 8 | (int16_t) temp[1];  // Combine the two bytes into a single value
   float temperature = ((float) raw) / (1 << 8);
   if (temp[0] & 0x80) {          // Check if the sign bit is set

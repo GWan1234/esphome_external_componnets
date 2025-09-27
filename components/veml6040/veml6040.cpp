@@ -94,9 +94,10 @@ void VEML6040Component::send_word(uint8_t command, uint16_t data) {
 }
 
 uint16_t VEML6040Component::receive_word(uint8_t command) {
-  this->write(&command, 1, false);  // Write the command
   uint8_t data[2];
-  this->read(data, 2);
+  this->write_read(&command, 1, data, 2);
+//  this->write(&command, 1, false);  // Write the command
+//  this->read(data, 2);
   uint16_t raw = (uint16_t)data[0] | (((uint16_t)data[1]) << 8);  // Combine the two bytes into a single word
   return raw;
 }

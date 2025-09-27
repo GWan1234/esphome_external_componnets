@@ -196,10 +196,11 @@ i2c::ErrorCode VEML6075Component::send_command(uint8_t command, uint16_t data) {
 }
 
 uint16_t VEML6075Component::read_data(uint8_t command) {
-  this->write(&command, 1, false);  // 发送命令
   uint8_t data[2];
-  this->read(data, 2);                                    // 读取2字节数据
-  return (uint16_t) data[0] | ((uint16_t) data[1]) << 8;  // 返回
+  this->write_read(&command, 1, data, 2);
+//  this->write(&command, 1, false);  // 发送命令
+//  this->read(data, 2);                                    // 读取2字节数据
+  return ((uint16_t) data[0]) | ((uint16_t) data[1]) << 8;  // 返回
 }
 
 }  // namespace veml6075

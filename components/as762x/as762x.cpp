@@ -75,7 +75,7 @@ void AS762XComponent::update() {
   if (this->conversion_type_ == AS762X_CONVERSION_TYPE_3) {
     this->clear_data_available();
     this->set_conversion_type_reg(AS762X_CONVERSION_TYPE_3);
-    uint32_t timeout = millis() + TIMEOUT;
+    uint32_t timeout = millis() + AS762X_TIMEOUT;
     while (!this->data_available()) {
       // wait for data to be available
       delay(POLLING_DELAY);

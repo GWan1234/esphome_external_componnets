@@ -72,7 +72,7 @@ namespace as762x {
 
 #define MAX_RETRIES 3
 #define POLLING_DELAY 5
-#define TIMEOUT 3000
+#define AS762X_TIMEOUT 3000
 
 enum AS762X_GAIN : uint8_t {
   AS762X_GAIN_1X,
