@@ -2,7 +2,6 @@ import esphome.codegen as cg
 from esphome.components import switch
 import esphome.config_validation as cv
 from esphome.const import (
-    CONF_BLUETOOTH,
     DEVICE_CLASS_SWITCH,
     ENTITY_CATEGORY_CONFIG,
     ICON_CHIP,
@@ -16,15 +15,17 @@ EnableUploadSwitch = ld2460_ns.class_("EnableUploadSwitch", switch.Switch)
 
 CONF_ENABLE_UPLOAD = "enable_upload"
 
-CONFIG_SCHEMA = {
-    cv.GenerateID(CONF_LD2460_ID): cv.use_id(LD2460Component),
-    cv.Optional(CONF_ENABLE_UPLOAD): switch.switch_schema(
-        EnableUploadSwitch,
-        device_class=DEVICE_CLASS_SWITCH,
-        entity_category=ENTITY_CATEGORY_CONFIG,
-        icon=ICON_CHIP,
-    ),
-}
+CONFIG_SCHEMA = cv.Schema(
+    {
+        cv.GenerateID(CONF_LD2460_ID): cv.use_id(LD2460Component),
+        cv.Optional(CONF_ENABLE_UPLOAD): switch.switch_schema(
+            EnableUploadSwitch,
+            device_class=DEVICE_CLASS_SWITCH,
+            entity_category=ENTITY_CATEGORY_CONFIG,
+            icon=ICON_CHIP,
+        ),
+    }
+)
 
 
 async def to_code(config):

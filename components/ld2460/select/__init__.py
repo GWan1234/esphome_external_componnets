@@ -11,24 +11,26 @@ ModeSelect = ld2460_ns.class_("ModeSelect", select.Select)
 BaudRateSelect = ld2460_ns.class_("BaudRateSelect", select.Select)
 SensitivitySelect = ld2460_ns.class_("SensitivitySelect", select.Select)
 
-CONFIG_SCHEMA = {
-    cv.GenerateID(CONF_LD2460_ID): cv.use_id(LD2460Component),
-    cv.Optional(CONF_MODE): select.select_schema(
-        ModeSelect,
-        entity_category=ENTITY_CATEGORY_CONFIG,
-        icon=ICON_THERMOMETER, #fixme
-    ),
-    cv.Optional(CONF_BAUD_RATE): select.select_schema(
-        BaudRateSelect,
-        entity_category=ENTITY_CATEGORY_CONFIG,
-        icon=ICON_THERMOMETER,
-    ),
-    cv.Optional(CONF_SENSITIVITY): select.select_schema(
-        SensitivitySelect,
-        entity_category=ENTITY_CATEGORY_CONFIG,
-        icon=ICON_THERMOMETER,
-    ),
-}
+CONFIG_SCHEMA = cv.Schema(
+    {
+        cv.GenerateID(CONF_LD2460_ID): cv.use_id(LD2460Component),
+        cv.Optional(CONF_MODE): select.select_schema(
+            ModeSelect,
+            entity_category=ENTITY_CATEGORY_CONFIG,
+            icon=ICON_THERMOMETER,  # fixme
+        ),
+        cv.Optional(CONF_BAUD_RATE): select.select_schema(
+            BaudRateSelect,
+            entity_category=ENTITY_CATEGORY_CONFIG,
+            icon=ICON_THERMOMETER,
+        ),
+        cv.Optional(CONF_SENSITIVITY): select.select_schema(
+            SensitivitySelect,
+            entity_category=ENTITY_CATEGORY_CONFIG,
+            icon=ICON_THERMOMETER,
+        ),
+    }
+)
 
 
 async def to_code(config):
