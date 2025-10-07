@@ -54,6 +54,11 @@ void LD2460Component::dump_config() {
 void LD2460Component::parse_upload() {
   uint8_t cmd = this->receive_buffer[4];  // should be 0x04
   uint16_t frame_size = (uint16_t) (this->receive_buffer[5]) | (((uint16_t) this->receive_buffer[6]) << 8);
+  if (frame_size < 11) {
+    this->head_found = false;  // invalid frame_size
+    this->receive_buffer.clear();
+    return;
+  }
   if (this->receive_buffer.size() < frame_size) {
     return;  // not full frame
   }
@@ -79,6 +84,9 @@ void LD2460Component::parse_upload() {
   }
 #endif
   for (uint8_t i = 0; i < target_num; i++) {
+    if (i >= MAX_TARGETS) {
+      break;  // ignore extra targets
+    }
     int16_t x = (int16_t) (this->receive_buffer[7 + i * 4]) |
                 (((int16_t) this->receive_buffer[7 + i * 4 + 1]) << 8);  // target x
     int16_t y = (int16_t) (this->receive_buffer[7 + i * 4 + 2]) |
@@ -98,6 +106,11 @@ void LD2460Component::parse_upload() {
 void LD2460Component::parse_ack() {
   uint8_t cmd = this->receive_buffer[4];  // now it is useful
   uint16_t frame_size = (uint16_t) (this->receive_buffer[5]) | (((uint16_t) this->receive_buffer[6]) << 8);
+  if (frame_size < 11) {
+    this->head_found = false;  // invalid frame_size
+    this->receive_buffer.clear();
+    return;
+  }
   if (this->receive_buffer.size() < frame_size) {
     return;  // not full frame
   }
@@ -251,6 +264,9 @@ void LD2460Component::loop() {
     if (this->head_found) {
       this->receive_buffer.push_back((uint8_t) this->read());
     }
+  }
+  if (this->receive_buffer.size() < 11) {
+    return;  // Not enough data to process
   }
   if (memcmp(this->receive_buffer.data(), LD2460_UPLOAD_HEAD, 4) == 0) {  // target detected
     this->parse_upload();

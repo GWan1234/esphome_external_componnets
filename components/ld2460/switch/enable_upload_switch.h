@@ -8,7 +8,9 @@ namespace ld2460 {
 
 class EnableUploadSwitch : public switch_::Switch, public Parented<LD2460Component> {
  public:
-  EnableUploadSwitch() = default;
+  EnableUploadSwitch() {
+    this->turn_on();
+  }
 
  protected:
   void write_state(bool state) override;
