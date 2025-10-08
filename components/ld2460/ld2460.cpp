@@ -83,10 +83,10 @@ void LD2460Component::parse_upload() {
     this->set_timeout("timeout", 1000, [this]() { this->target_binary_sensor_->publish_state(false); });
   }
 #endif
+  if (target_num > MAX_TARGETS ) {
+    target_num = MAX_TARGETS;  // ignore extra targets
+  }
   for (uint8_t i = 0; i < target_num; i++) {
-    if (i >= MAX_TARGETS) {
-      break;  // ignore extra targets
-    }
     int16_t x = (int16_t) (this->receive_buffer[7 + i * 4]) |
                 (((int16_t) this->receive_buffer[7 + i * 4 + 1]) << 8);  // target x
     int16_t y = (int16_t) (this->receive_buffer[7 + i * 4 + 2]) |
