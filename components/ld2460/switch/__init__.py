@@ -34,4 +34,5 @@ async def to_code(config):
     if enable_upload_config := config.get(CONF_ENABLE_UPLOAD):
         s = await switch.new_switch(enable_upload_config)
         await cg.register_parented(s, config[CONF_LD2460_ID])
+        cg.add(s.init())
         cg.add(ld2460_component.set_enable_upload_switch(s))

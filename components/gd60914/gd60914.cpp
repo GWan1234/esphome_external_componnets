@@ -9,6 +9,7 @@ static const char *const TAG = "gd60914";
 void GD60914Component::setup() {
   ESP_LOGW(TAG, "setup gd60914 sensor");
   this->write_byte(SINGLE); //  打开单次测量功能，只需发一次
+  this->flush();
 }
 
 void GD60914Component::update() {
@@ -16,6 +17,7 @@ void GD60914Component::update() {
     this->read();
   }
   this->write_byte(this->mode_);
+  this->flush();
   uint8_t buffer[8];
   buffer[7] = 0;
   this->read_array(buffer, 7);
@@ -36,6 +38,7 @@ void GD60914Component::reset() {
     this->read();
   }
   this->write_array(RESET_CMD, 5);
+  this->flush();
 }
 
 void GD60914Component::calibrate35() {
@@ -43,6 +46,7 @@ void GD60914Component::calibrate35() {
     this->read();
   }
   this->write_array(CALIBRATE35_CMD, 5);
+  this->flush();
 }
 
 void GD60914Component::calibrate42() {
@@ -50,6 +54,7 @@ void GD60914Component::calibrate42() {
     this->read();
   }
   this->write_array(CALIBRATE42_CMD, 5);
+  this->flush();
 }
 
 }

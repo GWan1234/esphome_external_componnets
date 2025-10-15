@@ -301,6 +301,7 @@ void LD2451Component::send_command(uint16_t command, const uint8_t *data, size_t
     this->write_array(data, data_size);
   }
   this->write_array(LD2451_TAIL, 4);
+  this->flush();
   // read ack
   uint8_t ack[4];
   this->read_array(ack, 4);

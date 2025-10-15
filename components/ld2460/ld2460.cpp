@@ -253,6 +253,13 @@ void LD2460Component::parse_ack() {
 }
 
 void LD2460Component::loop() {
+  if (!this->task_queue_.empty()) {
+    auto task = std::move(this->task_queue_.front());
+    if (task) {
+      task();
+    }
+    this->task_queue_.pop();
+  }
   uint8_t peeked;
   while (this->available()) {
     if (!this->head_found && this->peek_byte(&peeked) &&
@@ -400,6 +407,7 @@ void LD2460Component::send_command(uint8_t command, const uint8_t *data, uint16_
     this->write_array(data, data_size);
   }
   this->write_array(LD2460_CMD_TAIL, 4);
+  this->flush();
 }
 
 }  // namespace ld2460

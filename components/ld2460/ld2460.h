@@ -69,6 +69,8 @@ class LD2460Component : public Component, public uart::UARTDevice {
   float get_setup_priority() const override { return setup_priority::DATA; }
   void dump_config() override;
   void loop() override;
+
+  std::queue<std::function<void()>> task_queue_{};
 #ifdef USE_SENSOR
   void set_target_x_sensor(uint8_t n, sensor::Sensor *target_x_sensor) { this->target_x_sensors_[n] = target_x_sensor; }
   void set_target_y_sensor(uint8_t n, sensor::Sensor *target_y_sensor) { this->target_y_sensors_[n] = target_y_sensor; }
