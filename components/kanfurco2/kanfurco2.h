@@ -43,7 +43,7 @@ template<typename... Ts> class ToggleSelfCalibrateAction : public Action<Ts...> 
   TEMPLATABLE_VALUE(uint16_t, base) // 产生名字base_，py对应需要
   //  template_ = await cg.templatable(config[CONF_VALUE], args, cg.uint16)
   //    cg.add(var.set_base(template_))
-  void play(Ts... x) override { this->kanfurco2_->toggle_self_calibrate(this->open_.value(x...),
+  void play(const Ts &...x) override { this->kanfurco2_->toggle_self_calibrate(this->open_.value(x...),
                                                                         this->period_.value(x...),
                                                                         this->base_.value(x...)); }
 
@@ -56,7 +56,7 @@ template<typename... Ts> class CalibrateAction: public Action<Ts...> {
   public:
     CalibrateAction(KANFURCO2Component *kanfurco2) : kanfurco2_(kanfurco2) {}
     TEMPLATABLE_VALUE(uint16_t, base)
-    void play(Ts... x) override { this->kanfurco2_->calibrate(this->base_.value(x...)); }
+    void play(const Ts &...x) override { this->kanfurco2_->calibrate(this->base_.value(x...)); }
 
   protected:
     KANFURCO2Component *kanfurco2_;

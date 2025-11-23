@@ -6,7 +6,6 @@ from esphome.components import sensor, uart
 from esphome.const import (
     CONF_ID,
     CONF_CO2,
-    CONF_UPDATE_INTERVAL,
     UNIT_PARTS_PER_MILLION,
     ICON_MOLECULE_CO2,
     STATE_CLASS_MEASUREMENT, CONF_PERIOD,

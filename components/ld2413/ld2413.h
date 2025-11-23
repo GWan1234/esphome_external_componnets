@@ -48,7 +48,7 @@ class LD2413Component : public Component, public uart::UARTDevice {
 template<typename... Ts> class LD2413UpdateDoorLimitAction : public Action<Ts...> {
  public:
   LD2413UpdateDoorLimitAction(LD2413Component *ld2413) : ld2413_(ld2413) {}
-  void play(Ts... x) override { this->ld2413_->update_door_limit(); }
+  void play(const Ts &...x) override { this->ld2413_->update_door_limit(); }
 
  protected:
   LD2413Component *ld2413_;
@@ -57,7 +57,7 @@ template<typename... Ts> class LD2413UpdateDoorLimitAction : public Action<Ts...
 template<typename... Ts> class LD2413EnableConfigAction : public Action<Ts...> {
  public:
   LD2413EnableConfigAction(LD2413Component *ld2413) : ld2413_(ld2413) {}
-  void play(Ts... x) override { this->ld2413_->enable_config(); }
+  void play(const Ts &...x) override { this->ld2413_->enable_config(); }
 
  protected:
   LD2413Component *ld2413_;
@@ -66,7 +66,7 @@ template<typename... Ts> class LD2413EnableConfigAction : public Action<Ts...> {
 template<typename... Ts> class LD2413DisableConfigAction : public Action<Ts...> {
  public:
   LD2413DisableConfigAction(LD2413Component *ld2413) : ld2413_(ld2413) {}
-  void play(Ts... x) override { this->ld2413_->disable_config(); }
+  void play(const Ts &...x) override { this->ld2413_->disable_config(); }
 
  protected:
   LD2413Component *ld2413_;
@@ -76,7 +76,7 @@ template<typename... Ts> class LD2413SetMaxDistanceAction : public Action<Ts...>
  public:
   LD2413SetMaxDistanceAction(LD2413Component *ld2413) : ld2413_(ld2413) {}
   TEMPLATABLE_VALUE(uint16_t, max_distance)
-  void play(Ts... x) override { this->ld2413_->set_max_distance(this->max_distance_.value(x...)); }
+  void play(const Ts &...x) override { this->ld2413_->set_max_distance(this->max_distance_.value(x...)); }
 
  protected:
   LD2413Component *ld2413_;
@@ -87,7 +87,7 @@ template<typename... Ts> class LD2413SetMinDistanceAction : public Action<Ts...>
  public:
   LD2413SetMinDistanceAction(LD2413Component *ld2413) : ld2413_(ld2413) {}
   TEMPLATABLE_VALUE(uint16_t, min_distance)
-  void play(Ts... x) override { this->ld2413_->set_min_distance(this->min_distance_.value(x...)); }
+  void play(const Ts &...x) override { this->ld2413_->set_min_distance(this->min_distance_.value(x...)); }
 
  protected:
   LD2413Component *ld2413_;
@@ -97,7 +97,7 @@ template<typename... Ts> class LD2413SetReportIntervalAction : public Action<Ts.
  public:
   LD2413SetReportIntervalAction(LD2413Component *ld2413) : ld2413_(ld2413) {}
   TEMPLATABLE_VALUE(uint16_t, update_interval)
-  void play(Ts... x) override { this->ld2413_->set_report_interval(this->update_interval_.value(x...)); }
+  void play(const Ts &...x) override { this->ld2413_->set_report_interval(this->update_interval_.value(x...)); }
 
  protected:
   LD2413Component *ld2413_;

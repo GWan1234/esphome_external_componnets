@@ -285,7 +285,7 @@ class TemperatureReadyTrigger : public Trigger<float> {
 template<typename... Ts> class MAX30105ResetAction : public Action<Ts...> {
  public:
   MAX30105ResetAction(MAX30105Component *max30105) : max30105_(max30105) {}
-  void play(Ts... x) override { this->max30105_->reset(); }
+  void play(const Ts &...x) override { this->max30105_->reset(); }
 
  protected:
   MAX30105Component *max30105_;
@@ -294,7 +294,7 @@ template<typename... Ts> class MAX30105ResetAction : public Action<Ts...> {
 template<typename... Ts> class MAX30105ShutdownAction : public Action<Ts...> {
  public:
   MAX30105ShutdownAction(MAX30105Component *max30105) : max30105_(max30105) {}
-  void play(Ts... x) override { this->max30105_->shutdown(); }
+  void play(const Ts &...x) override { this->max30105_->shutdown(); }
 
  protected:
   MAX30105Component *max30105_;
@@ -303,7 +303,7 @@ template<typename... Ts> class MAX30105ShutdownAction : public Action<Ts...> {
 template<typename... Ts> class MAX30105WakeupAction : public Action<Ts...> {
  public:
   MAX30105WakeupAction(MAX30105Component *max30105) : max30105_(max30105) {}
-  void play(Ts... x) override { this->max30105_->wakeup(); }
+  void play(const Ts &...x) override { this->max30105_->wakeup(); }
 
  protected:
   MAX30105Component *max30105_;
@@ -313,7 +313,7 @@ template<typename... Ts> class MAX30105SetProximityThresholdAction : public Acti
  public:
   MAX30105SetProximityThresholdAction(MAX30105Component *max30105) : max30105_(max30105) {}
   TEMPLATABLE_VALUE(uint8_t, threshold)
-  void play(Ts... x) override { this->max30105_->set_proximity_threshold_reg(this->threshold_.value(x...)); }
+  void play(const Ts &...x) override { this->max30105_->set_proximity_threshold_reg(this->threshold_.value(x...)); }
 
  protected:
   MAX30105Component *max30105_;
@@ -323,7 +323,7 @@ template<typename... Ts> class MAX30105SetModeAction : public Action<Ts...> {
  public:
   MAX30105SetModeAction(MAX30105Component *max30105) : max30105_(max30105) {}
   TEMPLATABLE_VALUE(uint8_t, mode)
-  void play(Ts... x) override { this->max30105_->set_mode_reg((MAX30105_MODE) this->mode_.value(x...)); }
+  void play(const Ts &...x) override { this->max30105_->set_mode_reg((MAX30105_MODE) this->mode_.value(x...)); }
 
  protected:
   MAX30105Component *max30105_;
@@ -336,7 +336,7 @@ template<typename... Ts> class MAX30105SetLedCurrentAction : public Action<Ts...
   TEMPLATABLE_VALUE(uint8_t, ir_current)
   TEMPLATABLE_VALUE(uint8_t, green_current)
   TEMPLATABLE_VALUE(uint8_t, pilot_current)
-  void play(Ts... x) override {
+  void play(const Ts &...x) override {
     this->max30105_->set_led_current_reg(this->red_current_.value(x...), this->ir_current_.value(x...),
                                          this->green_current_.value(x...), this->pilot_current_.value(x...));
   }
@@ -353,7 +353,7 @@ template<typename... Ts> class MAX30105EnableInterruptsAction : public Action<Ts
   TEMPLATABLE_VALUE(bool, alc_overflow)
   TEMPLATABLE_VALUE(bool, prox_int)
   TEMPLATABLE_VALUE(bool, temp_ready)
-  void play(Ts... x) override {
+  void play(const Ts &...x) override {
     this->max30105_->enable_interrupts(this->fifo_almost_full_.value(x...), this->data_ready_.value(x...),
                                        this->alc_overflow_.value(x...), this->prox_int_.value(x...),
                                        this->temp_ready_.value(x...));
@@ -366,7 +366,7 @@ template<typename... Ts> class MAX30105EnableInterruptsAction : public Action<Ts
 template<typename... Ts> class MAX30105SimulateInterruptAction : public Action<Ts...> {
  public:
   MAX30105SimulateInterruptAction(MAX30105Component *max30105) : max30105_(max30105) {}
-  void play(Ts... x) override { this->max30105_->simulate_interrupt(); }
+  void play(const Ts &...x) override { this->max30105_->simulate_interrupt(); }
 
  protected:
   MAX30105Component *max30105_;

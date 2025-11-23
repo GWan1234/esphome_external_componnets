@@ -233,7 +233,7 @@ class DataReadyTrigger : public Trigger<> {
 template<typename... Ts> class AS762XResetAction : public Action<Ts...> {
  public:
   AS762XResetAction(AS762XComponent *as762x) : as762x_(as762x) {}
-  void play(Ts... x) override { this->as762x_->reset(); }
+  void play(const Ts &...x) override { this->as762x_->reset(); }
 
  protected:
   AS762XComponent *as762x_;

@@ -39,7 +39,7 @@ class ASH01IBComponent : public PollingComponent, public i2c::I2CDevice {
 template<typename... Ts> class ASH01IBStartMeasurementAction : public Action<Ts...> {
  public:
   ASH01IBStartMeasurementAction(ASH01IBComponent *ash01ib) : ash01ib_(ash01ib) {}
-  void play(Ts... x) override { this->ash01ib_->start_measurement(); }
+  void play(const Ts &...x) override { this->ash01ib_->start_measurement(); }
 
  protected:
   ASH01IBComponent *ash01ib_;
@@ -48,7 +48,7 @@ template<typename... Ts> class ASH01IBStartMeasurementAction : public Action<Ts.
 template<typename... Ts> class ASH01IBStopMeasurementAction : public Action<Ts...> {
  public:
   ASH01IBStopMeasurementAction(ASH01IBComponent *ash01ib) : ash01ib_(ash01ib) {}
-  void play(Ts... x) override { this->ash01ib_->stop_measurement(); }
+  void play(const Ts &...x) override { this->ash01ib_->stop_measurement(); }
 
  protected:
   ASH01IBComponent *ash01ib_;
@@ -58,7 +58,7 @@ template<typename... Ts> class ASH01IBStopMeasurementAction : public Action<Ts..
 template<typename... Ts> class ASH01IBStartCalibrationAction : public Action<Ts...> {
  public:
   ASH01IBStartCalibrationAction(ASH01IBComponent *ash01ib) : ash01ib_(ash01ib) {}
-  void play(Ts... x) override { this->ash01ib_->start_calibration(); }
+  void play(const Ts &...x) override { this->ash01ib_->start_calibration(); }
 
  protected:
   ASH01IBComponent *ash01ib_;
@@ -67,7 +67,7 @@ template<typename... Ts> class ASH01IBStartCalibrationAction : public Action<Ts.
 template<typename... Ts> class ASH01IBStopCalibrationAction : public Action<Ts...> {
  public:
   ASH01IBStopCalibrationAction(ASH01IBComponent *ash01ib) : ash01ib_(ash01ib) {}
-  void play(Ts... x) override { this->ash01ib_->stop_calibration(); }
+  void play(const Ts &...x) override { this->ash01ib_->stop_calibration(); }
 
  protected:
   ASH01IBComponent *ash01ib_;

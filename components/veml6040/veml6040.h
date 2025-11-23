@@ -59,7 +59,7 @@ class VEML6040Component : public PollingComponent, public i2c::I2CDevice {
 template<typename... Ts> class VEML6040ShutdownAction : public Action<Ts...> {
  public:
   VEML6040ShutdownAction(VEML6040Component *veml6040) : veml6040_(veml6040) {}
-  void play(Ts... x) override { this->veml6040_->shutdown(); }
+  void play(const Ts &...x) override { this->veml6040_->shutdown(); }
 
  protected:
   VEML6040Component *veml6040_;
@@ -68,7 +68,7 @@ template<typename... Ts> class VEML6040ShutdownAction : public Action<Ts...> {
 template<typename... Ts> class VEML6040WakeupAction : public Action<Ts...> {
  public:
   VEML6040WakeupAction(VEML6040Component *veml6040) : veml6040_(veml6040) {}
-  void play(Ts... x) override { this->veml6040_->wakeup(); }
+  void play(const Ts &...x) override { this->veml6040_->wakeup(); }
 
  protected:
   VEML6040Component *veml6040_;

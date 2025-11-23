@@ -38,7 +38,7 @@ template<typename... Ts> class ACD1100SetCalibrateModeAction : public Action<Ts.
  public:
   ACD1100SetCalibrateModeAction(ACD1100Component *acd1100) : acd1100_(acd1100) {}
   TEMPLATABLE_VALUE(bool, mode)
-  void play(Ts... x) override { this->acd1100_->set_calibrate_mode(this->mode_.value(x...)); }
+  void play(const Ts &...x) override { this->acd1100_->set_calibrate_mode(this->mode_.value(x...)); }
 
  protected:
   ACD1100Component *acd1100_;
@@ -48,7 +48,7 @@ template<typename... Ts> class ACD1100CalibrateAction : public Action<Ts...> {
  public:
   ACD1100CalibrateAction(ACD1100Component *acd1100) : acd1100_(acd1100) {}
   TEMPLATABLE_VALUE(uint16_t, base)
-  void play(Ts... x) override { this->acd1100_->calibrate(this->base_.value(x...)); }
+  void play(const Ts &...x) override { this->acd1100_->calibrate(this->base_.value(x...)); }
 
  protected:
   ACD1100Component *acd1100_;
@@ -57,7 +57,7 @@ template<typename... Ts> class ACD1100CalibrateAction : public Action<Ts...> {
 template<typename... Ts> class ACD1100ResetAction : public Action<Ts...> {
  public:
   ACD1100ResetAction(ACD1100Component *acd1100) : acd1100_(acd1100) {}
-  void play(Ts... x) override { this->acd1100_->reset(); }
+  void play(const Ts &...x) override { this->acd1100_->reset(); }
 
  protected:
   ACD1100Component *acd1100_;

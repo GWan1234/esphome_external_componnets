@@ -114,7 +114,7 @@ class LD2451Component : public Component, public uart::UARTDevice {
 template<typename... Ts> class LD2451EnableConfigAction : public Action<Ts...> {
  public:
   LD2451EnableConfigAction(LD2451Component *ld2451) : ld2451_(ld2451) {}
-  void play(Ts... x) override { this->ld2451_->enable_config(); }
+  void play(const Ts &...x) override { this->ld2451_->enable_config(); }
 
  protected:
   LD2451Component *ld2451_;
@@ -123,7 +123,7 @@ template<typename... Ts> class LD2451EnableConfigAction : public Action<Ts...> {
 template<typename... Ts> class LD2451DisableConfigAction : public Action<Ts...> {
  public:
   LD2451DisableConfigAction(LD2451Component *ld2451) : ld2451_(ld2451) {}
-  void play(Ts... x) override { this->ld2451_->disable_config(); }
+  void play(const Ts &...x) override { this->ld2451_->disable_config(); }
 
  protected:
   LD2451Component *ld2451_;
@@ -133,7 +133,7 @@ template<typename... Ts> class LD2451SetBaudRateAction : public Action<Ts...> {
  public:
   LD2451SetBaudRateAction(LD2451Component *ld2451) : ld2451_(ld2451) {}
   TEMPLATABLE_VALUE(uint8_t, baud_rate)
-  void play(Ts... x) override { this->ld2451_->set_baud_rate((LD2451_BAUD_RATE) this->baud_rate_.value(x...)); }
+  void play(const Ts &...x) override { this->ld2451_->set_baud_rate((LD2451_BAUD_RATE) this->baud_rate_.value(x...)); }
 
  protected:
   LD2451Component *ld2451_;
@@ -142,7 +142,7 @@ template<typename... Ts> class LD2451SetBaudRateAction : public Action<Ts...> {
 template<typename... Ts> class LD2451ResetAction : public Action<Ts...> {
  public:
   LD2451ResetAction(LD2451Component *ld2451) : ld2451_(ld2451) {}
-  void play(Ts... x) override { this->ld2451_->reset(); }
+  void play(const Ts &...x) override { this->ld2451_->reset(); }
 
  protected:
   LD2451Component *ld2451_;
@@ -151,7 +151,7 @@ template<typename... Ts> class LD2451ResetAction : public Action<Ts...> {
 template<typename... Ts> class LD2451RestartAction : public Action<Ts...> {
  public:
   LD2451RestartAction(LD2451Component *ld2451) : ld2451_(ld2451) {}
-  void play(Ts... x) override { this->ld2451_->restart(); }
+  void play(const Ts &...x) override { this->ld2451_->restart(); }
 
  protected:
   LD2451Component *ld2451_;
@@ -163,7 +163,7 @@ template<typename... Ts> class LD2451SetSensitivityAction : public Action<Ts...>
   LD2451SetSensitivityAction(LD2451Component *ld2451) : ld2451_(ld2451) {}
   TEMPLATABLE_VALUE(uint8_t, valid_trigs)
   TEMPLATABLE_VALUE(uint8_t, signal_threshold)
-  void play(Ts... x) override { this->ld2451_->set_sensitivity(this->valid_trigs_.value(x...),
+  void play(const Ts &...x) override { this->ld2451_->set_sensitivity(this->valid_trigs_.value(x...),
                                                                this->signal_threshold_.value(x...)); }
 
  protected:
@@ -177,7 +177,7 @@ template<typename... Ts> class LD2451SetTargetDetectConfigAction : public Action
   TEMPLATABLE_VALUE(uint8_t, direction)
   TEMPLATABLE_VALUE(uint8_t, min_speed)
   TEMPLATABLE_VALUE(uint8_t, no_target_delay)
-  void play(Ts... x) override { this->ld2451_->set_target_detect_config(this->max_distance_.value(x...),
+  void play(const Ts &...x) override { this->ld2451_->set_target_detect_config(this->max_distance_.value(x...),
                                                                         (LD2451_DIRECTION)this->direction_.value(x...),
                                                                         this->min_speed_.value(x...),
                                                                         this->no_target_delay_.value(x...)); }

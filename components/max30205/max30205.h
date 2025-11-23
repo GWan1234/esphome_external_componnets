@@ -94,7 +94,7 @@ class OverTemperatureTrigger : public Trigger<float> {
 template<typename... Ts> class MAX30205ShutdownAction : public Action<Ts...> {
  public:
   MAX30205ShutdownAction(MAX30205Component *max30205) : max30205_(max30205) {}
-  void play(Ts... x) override { this->max30205_->shutdown(); }
+  void play(const Ts &...x) override { this->max30205_->shutdown(); }
 
  protected:
   MAX30205Component *max30205_;
@@ -103,7 +103,7 @@ template<typename... Ts> class MAX30205ShutdownAction : public Action<Ts...> {
 template<typename... Ts> class MAX30205WakeupAction : public Action<Ts...> {
  public:
   MAX30205WakeupAction(MAX30205Component *max30205) : max30205_(max30205) {}
-  void play(Ts... x) override { this->max30205_->wakeup(); }
+  void play(const Ts &...x) override { this->max30205_->wakeup(); }
 
  protected:
   MAX30205Component *max30205_;

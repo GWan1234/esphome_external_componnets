@@ -36,7 +36,7 @@ template<typename... Ts> class ACD3100CalibrateAction : public Action<Ts...> {
  public:
   ACD3100CalibrateAction(ACD3100Component *acd3100) : acd3100_(acd3100) {}
   TEMPLATABLE_VALUE(uint16_t, base)
-  void play(Ts... x) override { this->acd3100_->calibrate(this->base_.value(x...)); }
+  void play(const Ts &...x) override { this->acd3100_->calibrate(this->base_.value(x...)); }
 
  protected:
   ACD3100Component *acd3100_;
@@ -45,7 +45,7 @@ template<typename... Ts> class ACD3100CalibrateAction : public Action<Ts...> {
 template<typename... Ts> class ACD3100ResetAction : public Action<Ts...> {
  public:
   ACD3100ResetAction(ACD3100Component *acd3100) : acd3100_(acd3100) {}
-  void play(Ts... x) override { this->acd3100_->reset(); }
+  void play(const Ts &...x) override { this->acd3100_->reset(); }
 
  protected:
   ACD3100Component *acd3100_;

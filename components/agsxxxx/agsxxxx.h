@@ -32,7 +32,7 @@ template<typename... Ts> class AGSXXXXCalibrateAction : public Action<Ts...> {
  public:
   AGSXXXXCalibrateAction(AGSXXXXComponent *agsxxxx) : agsxxxx_(agsxxxx) {}
   TEMPLATABLE_VALUE(uint16_t, mode)
-  void play(Ts... x) override { this->agsxxxx_->calibrate(this->mode_.value(x...)); }
+  void play(const Ts &...x) override { this->agsxxxx_->calibrate(this->mode_.value(x...)); }
 
  protected:
   AGSXXXXComponent *agsxxxx_;

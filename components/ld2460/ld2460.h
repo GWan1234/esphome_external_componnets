@@ -130,7 +130,7 @@ template<typename... Ts> class LD2460EnableUploadAction : public Action<Ts...> {
  public:
   LD2460EnableUploadAction(LD2460Component *ld2460) : ld2460_(ld2460) {}
   TEMPLATABLE_VALUE(bool, upload)
-  void play(Ts... x) override { this->ld2460_->enable_upload(this->upload_.value(x...)); }
+  void play(const Ts &...x) override { this->ld2460_->enable_upload(this->upload_.value(x...)); }
 
  protected:
   LD2460Component *ld2460_;
@@ -141,7 +141,7 @@ template<typename... Ts> class LD2460SetInstallParamsAction : public Action<Ts..
   LD2460SetInstallParamsAction(LD2460Component *ld2460) : ld2460_(ld2460) {}
   TEMPLATABLE_VALUE(float, height)
   TEMPLATABLE_VALUE(float, angle)
-  void play(Ts... x) override { this->ld2460_->set_install_params(this->height_.value(x...), this->angle_.value(x...)); }
+  void play(const Ts &...x) override { this->ld2460_->set_install_params(this->height_.value(x...), this->angle_.value(x...)); }
 
  protected:
   LD2460Component *ld2460_;
@@ -150,7 +150,7 @@ template<typename... Ts> class LD2460SetInstallParamsAction : public Action<Ts..
 template<typename... Ts> class LD2460RestartAction : public Action<Ts...> {
  public:
   LD2460RestartAction(LD2460Component *ld2460) : ld2460_(ld2460) {}
-  void play(Ts... x) override { this->ld2460_->restart(); }
+  void play(const Ts &...x) override { this->ld2460_->restart(); }
 
  protected:
   LD2460Component *ld2460_;
@@ -159,7 +159,7 @@ template<typename... Ts> class LD2460RestartAction : public Action<Ts...> {
 template<typename... Ts> class LD2460FactoryResetAction : public Action<Ts...> {
  public:
   LD2460FactoryResetAction(LD2460Component *ld2460) : ld2460_(ld2460) {}
-  void play(Ts... x) override { this->ld2460_->factory_reset(); }
+  void play(const Ts &...x) override { this->ld2460_->factory_reset(); }
 
  protected:
   LD2460Component *ld2460_;
@@ -171,7 +171,7 @@ template<typename... Ts> class LD2460SetDetectRangeAction : public Action<Ts...>
   TEMPLATABLE_VALUE(float, detect_distance)
   TEMPLATABLE_VALUE(float, detect_start_angle)
   TEMPLATABLE_VALUE(float, detect_end_angle)
-  void play(Ts... x) override { this->ld2460_->set_detect_range(this->detect_distance_.value(x...),
+  void play(const Ts &...x) override { this->ld2460_->set_detect_range(this->detect_distance_.value(x...),
                                                                 this->detect_start_angle_.value(x...),
                                                                 this->detect_end_angle_.value(x...)); }
 

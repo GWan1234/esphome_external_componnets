@@ -95,7 +95,7 @@ template<typename... Ts> class VEML6075SetCoefficientsAction : public Action<Ts.
   TEMPLATABLE_VALUE(float, uvb_d)
   TEMPLATABLE_VALUE(float, uva_response)
   TEMPLATABLE_VALUE(float, uvb_response)
-  void play(Ts... x) override { this->veml6075_->set_coefficients(this->uva_a_.value(x...),
+  void play(const Ts &...x) override { this->veml6075_->set_coefficients(this->uva_a_.value(x...),
                                                                   this->uva_b_.value(x...),
                                                                   this->uvb_c_.value(x...),
                                                                   this->uvb_d_.value(x...),

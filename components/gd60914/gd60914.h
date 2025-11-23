@@ -39,7 +39,7 @@ class GD60914Component : public PollingComponent, public uart::UARTDevice {
 template<typename... Ts> class GD60914ResetAction : public Action<Ts...> {
  public:
   GD60914ResetAction(GD60914Component *gd60914) : gd60914_(gd60914) {}
-  void play(Ts... x) override { this->gd60914_->reset(); }
+  void play(const Ts &...x) override { this->gd60914_->reset(); }
 
  protected:
   GD60914Component *gd60914_;
@@ -49,7 +49,7 @@ template<typename... Ts> class GD60914ResetAction : public Action<Ts...> {
 template<typename... Ts> class GD60914Calibrate35Action : public Action<Ts...> {
  public:
   GD60914Calibrate35Action(GD60914Component *gd60914) : gd60914_(gd60914) {}
-  void play(Ts... x) override { this->gd60914_->calibrate35(); }
+  void play(const Ts &...x) override { this->gd60914_->calibrate35(); }
 
  protected:
   GD60914Component *gd60914_;
@@ -58,7 +58,7 @@ template<typename... Ts> class GD60914Calibrate35Action : public Action<Ts...> {
 template<typename... Ts> class GD60914Calibrate42Action : public Action<Ts...> {
  public:
   GD60914Calibrate42Action(GD60914Component *gd60914) : gd60914_(gd60914) {}
-  void play(Ts... x) override { this->gd60914_->calibrate42(); }
+  void play(const Ts &...x) override { this->gd60914_->calibrate42(); }
 
  protected:
   GD60914Component *gd60914_;
