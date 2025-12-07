@@ -189,6 +189,8 @@ void LD2460Component::parse_ack() {
       uint8_t d = this->receive_buffer[7];
       if (d == 0x00) {
         ESP_LOGW(TAG, "set baud rate fail");
+      } else {
+        this->parent_->load_settings(false);
       }
       break;
     }
@@ -247,6 +249,7 @@ void LD2460Component::parse_ack() {
     }
     default: {
       ESP_LOGW(TAG, "unknown cmd: %02X", cmd);
+//      this->status_set_warning(); // 还是直接忽略吧
     }
   }
   this->receive_buffer.erase(this->receive_buffer.begin(), this->receive_buffer.begin() + frame_size);
@@ -349,6 +352,10 @@ void LD2460Component::set_baud_rate(const std::string &baud_rate) {
     data = 0x07;
   }
   this->send_command(0x0E, &data, 1);
+  uint32_t new_baud_rate = stoi(baud_rate);
+  if (this->parent_->get_baud_rate() != new_baud_rate) {
+    this->parent_->set_baud_rate(new_baud_rate);
+  }
   this->set_timeout(200, [this]() { this->restart(); });
 }
 
