@@ -1,7 +1,5 @@
 #include "ags3870.h"
 #include <bitset>
-#include "esphome/components/i2c/i2c.h"
-#include "esphome/core/hal.h"
 #include "esphome/core/log.h"
 
 namespace esphome {
