@@ -1,0 +1,18 @@
+#pragma once
+
+#include "esphome/components/button/button.h"
+#include "../as201.h"
+
+namespace esphome {
+namespace as201 {
+
+class FactoryResetButton : public button::Button, public Parented<AS201Component> {
+ public:
+  FactoryResetButton() = default;
+
+ protected:
+  void press_action() override;
+};
+
+}  // namespace as201
+}  // namespace esphome
