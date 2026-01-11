@@ -190,8 +190,6 @@ bool ML307RComponent::send_at_command(const std::string &cmd, uint32_t timeout_m
   // 发送命令
   this->write_str((cmd + "\r").c_str());
   this->flush();
-  ESP_LOGD(TAG, "发送: %s", cmd.c_str());
-
   return true;
 }
 
