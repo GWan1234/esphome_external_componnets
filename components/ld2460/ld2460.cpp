@@ -101,6 +101,7 @@ void LD2460Component::parse_upload() {
 #endif
   }
   this->receive_buffer.erase(this->receive_buffer.begin(), this->receive_buffer.begin() + frame_size);
+  this->data_callback_.call();
 }
 
 void LD2460Component::parse_ack() {

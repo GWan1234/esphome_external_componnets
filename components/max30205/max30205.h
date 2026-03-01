@@ -71,7 +71,7 @@ class MAX30205Component : public PollingComponent, public i2c::I2CDevice {
   friend class OverTemperatureTrigger;
   CallbackManager<void(float)> on_over_temperature_;
 
-  void add_on_over_temperature_callback(std::function<void(float)> callback) {
+  void add_on_over_temperature_callback(std::function<void(float)>&& callback) {
     this->on_over_temperature_.add(std::move(callback));
   }
   static void irq(MAX30205Component *c);

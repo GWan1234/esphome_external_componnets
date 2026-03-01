@@ -179,7 +179,7 @@ class AS762XComponent : public PollingComponent, public i2c::I2CDevice {
   bool interrupt_{false};  // is it happend
   static void irq(AS762XComponent *c);
   CallbackManager<void()> on_data_ready_;
-  void add_on_data_ready_callback(std::function<void()> callback) {
+  void add_on_data_ready_callback(std::function<void()>&& callback) {
     this->on_data_ready_.add(std::move(callback));
   }
 

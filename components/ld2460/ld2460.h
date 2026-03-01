@@ -99,6 +99,9 @@ class LD2460Component : public Component, public uart::UARTDevice {
 
   void restart_and_read_all_info();
   void read_all_info();
+  void add_on_data_callback(std::function<void()> &&callback) {
+    this->data_callback_.add(std::move(callback));
+  }
  protected:
   float height_;
   float angle_;
@@ -107,6 +110,8 @@ class LD2460Component : public Component, public uart::UARTDevice {
   float detect_start_angle_;
   float detect_end_angle_;
   std::string sensitivity_;
+
+  LazyCallbackManager<void()> data_callback_;
 
 #ifdef USE_SENSOR
   std::array<sensor::Sensor *, MAX_TARGETS> target_x_sensors_{};
@@ -177,6 +182,13 @@ template<typename... Ts> class LD2460SetDetectRangeAction : public Action<Ts...>
 
  protected:
   LD2460Component *ld2460_;
+};
+
+class LD2460DataTrigger : public Trigger<> {
+public:
+  explicit LD2460DataTrigger(LD2460Component *parent) {
+    parent->add_on_data_callback(std::bind(&LD2460DataTrigger::trigger, this));
+  }
 };
 
 } // namespace ld2460

@@ -6,7 +6,7 @@ from esphome.const import (
     CONF_ID,
     CONF_ANGLE,
     CONF_SENSITIVITY,
-    CONF_HEIGHT, CONF_MODE
+    CONF_HEIGHT, CONF_MODE, CONF_ON_DATA, CONF_TRIGGER_ID
 )
 
 CODEOWNERS = ["@synodriver"]
@@ -25,6 +25,7 @@ CONF_DETECT_START_ANGLE = "detect_start_angle"
 CONF_DETECT_END_ANGLE = "detect_end_angle"
 CONF_UPLOAD = "upload"
 
+LD2460DataTrigger = ld2460_ns.class_("LD2460DataTrigger", automation.Trigger.template())
 
 CONFIG_SCHEMA = cv.All(
     cv.Schema(
@@ -37,6 +38,11 @@ CONFIG_SCHEMA = cv.All(
             cv.Optional(CONF_DETECT_START_ANGLE, default=-45): cv.float_,
             cv.Optional(CONF_DETECT_END_ANGLE, default=-45): cv.float_,
             cv.Optional(CONF_SENSITIVITY, default="High"): cv.string,
+            cv.Optional(CONF_ON_DATA): automation.validate_automation(
+                {
+                    cv.GenerateID(CONF_TRIGGER_ID): cv.declare_id(LD2460DataTrigger),
+                }
+            ),
         }
     )
     .extend(cv.COMPONENT_SCHEMA)
@@ -64,6 +70,9 @@ async def to_code(config):
     cg.add(var.set_detect_start_angle_(config[CONF_DETECT_START_ANGLE]))
     cg.add(var.set_detect_end_angle_(config[CONF_DETECT_END_ANGLE]))
     cg.add(var.set_sensitivity_(config[CONF_SENSITIVITY]))
+    for conf in config.get(CONF_ON_DATA, []):
+        trigger = cg.new_Pvariable(conf[CONF_TRIGGER_ID], var)
+        await automation.build_automation(trigger, [], conf)
 
 
 LD2460EnableUploadAction = ld2460_ns.class_("LD2460EnableUploadAction", automation.Action)
